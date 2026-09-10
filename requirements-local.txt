@@ -1,0 +1,4 @@
+# Local generation on Apple Silicon. Heavy, and only needed for the "local"
+# backend, so it is kept out of requirements.txt: someone using a hosted
+# backend should not download an ML stack to render a placeholder.
+mflux

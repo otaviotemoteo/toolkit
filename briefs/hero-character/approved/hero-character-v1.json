@@ -1,0 +1,18 @@
+{
+  "brief": "briefs/hero-character/brief.md",
+  "backend": "local-cn",
+  "model": "mflux-community/z-image-turbo-controlnet-union-2-1-mflux-q4",
+  "size": "1024x1024",
+  "key_color": "#F7F6F3",
+  "generated_at": "20260907-155659",
+  "cost_note": "local controlnet, no cost, 14 steps, canny at 0.85. Negative prompt discarded: this model is distilled",
+  "dialect": "diffusion",
+  "control_image": "/private/tmp/claude-501/-Users-otavio/43668408-89d0-4905-9d89-08278387c631/scratchpad/init_paper.png",
+  "control_type": "canny",
+  "control_strength": 0.85,
+  "prompt_section": "## Prompt with structure",
+  "init_image": null,
+  "init_strength": null,
+  "prompt": "A young man with light skin and short dark brown hair, wearing a plain white\nt-shirt, mid-blue denim jeans and black sneakers, standing to the left of the\ndesk with his arms crossed. The desk is entirely to his right, never behind him,\nand his whole body is visible and clear of it. His face is fully\ndrawn and turned toward the viewer: two clear eyes, eyebrows, a nose, and a\nsmall closed smile. Every surface of him is evenly lit, one flat tone per area,\nwith no darker side and no shading under the chin or the arms.\n\nThe desk is narrow and occupies only the right half of the scene. Between him\nand the desk there is a vertical strip of empty background, and no part of the\ndesk passes behind him.\n\nBeside him stands a brown wooden desk holding two identical widescreen monitors\nof exactly the same size, side by side, and an open laptop at the far right\ncorner of the desk with its screen turned to face the viewer straight on, not\nangled away. The computer tower stands on the floor beside the desk rather than\non top of it. The screens are dark and carry lines of code in muted syntax\ncolours.\n\nflat illustration with clean rounded forms and a fine paper grain, flat even\nlighting across the whole scene, every surface one even area of muted colour\nlaid down without blending, light skin, dark brown\nhair, plain white t-shirt, blue trousers, black sneakers, brown wooden desk,\nmatte black monitor bezels, matte black computer tower, dark screens carrying\nlines of code in muted syntax colours, plain empty #F7F6F3 background,\ngenerous padding around the artwork",
+  "negative_prompt": ""
+}

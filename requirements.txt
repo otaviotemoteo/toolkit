@@ -1,0 +1,5 @@
+Pillow>=10.0.0
+# numpy and PyYAML are needed by the oil-motion scripts in phase 2, not by
+# anything here yet. Listed so one install covers both.
+numpy>=1.24.0
+PyYAML>=6.0.0

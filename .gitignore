@@ -1,0 +1,51 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Generated images are build output, not source. The brief and the prompt
+# sidecar are what get committed; regenerating from them is the point.
+# Remove this line if a specific approved asset should be versioned here.
+briefs/*/out/
+out/
+
+# ---------------------------------------------------------------------------
+# Working files. Local, iterative, and not part of the toolkit.
+#
+# Everything below is real and useful; none of it is something a stranger who
+# clones this repo should have to read or carry. docs/workspace.md is committed
+# and explains what belongs in each of these, so the flow can be rebuilt without
+# the files themselves.
+# ---------------------------------------------------------------------------
+
+# Session state. Read at the start of a session, written before the end.
+PROGRESS.md
+
+# Reading notes on harness and design method. Ours, and about how we work
+# rather than about how the toolkit works.
+docs/foundations.md
+docs/harness-map.md
+docs/breakdowns.md
+
+# Third party templates, downloaded verbatim. Not ours to redistribute.
+docs/templates/
+
+# Context for this particular portfolio, in Portuguese. Nothing here is needed
+# to use the toolkit.
+reference/
+
+# Drafts, posts and contact sheets about the work.
+docs/writeups/
+
+# Two lessons that are ours rather than the toolkit's. Both are about which
+# accounts to buy and when, no committed code depends on either, and the part
+# worth keeping is already a hard constraint in CLAUDE.md.
+docs/solutions/free-credit-is-a-hypothesis.md
+docs/solutions/subscription-is-not-api-credit.md
+
+# The archive of what each round of iteration produced.
+docs/history/*
+!docs/history/README.md

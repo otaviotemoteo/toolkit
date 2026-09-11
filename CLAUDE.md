@@ -64,7 +64,7 @@ animating, by compositing rather than generation.
 ## Verification
 
 ```bash
-make check        # lint, briefs, anchors, solutions, scene, mutation, smoke
+make check        # lint, briefs, anchors, solutions, scene, render, mutation, smoke
 make setup        # venv and dependencies
 make setup-local  # the Apple Silicon generation stack, large
 ```
@@ -96,8 +96,8 @@ apply here, and `briefs/hero-character/motion.md` says why.
 ## Where we are
 
 Phases 1 and 2 are closed. The character is approved and frozen, the hero
-animates from three layers and one rotation, and seven checks run in under a
-second. Thirteen lessons are recorded, each naming what enforces it.
+animates from three layers and one rotation, and eight checks run in under a
+second. Fourteen lessons are recorded, each naming what enforces it.
 
 **The hero, as built:** an approved drawing, cut by script into a static body, a
 head that rotates about the base of the neck, and eyes lifted off the face with

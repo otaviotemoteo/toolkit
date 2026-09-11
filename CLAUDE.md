@@ -84,6 +84,7 @@ the repository root and open `preview/index.html`.
 | `docs/ILLUSTRATION_SPEC.md` | **mandatory before generating anything** |
 | `briefs/<name>/brief.md` | before touching that asset |
 | `docs/solutions/README.md` | before proposing something that feels obvious |
+| `docs/asset-map.md` | before opening a brief, to pick the route |
 | `docs/architecture.md` | before adding a backend or changing the pipeline |
 | `docs/cost.md` | before anything that could spend money |
 | `docs/decisions.md` | before reopening a settled question |

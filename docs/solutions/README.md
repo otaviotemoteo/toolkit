@@ -50,3 +50,4 @@ will be learned again.
 | `the-negative-block-was-carrying-the-style.md` | a distilled model cannot hold this style at all |
 | `two-raster-layers-cannot-share-a-pixel.md` | overlapping cuts of one drawing ghost when they move |
 | `correct-the-image-not-the-prompt.md` | a mechanical defect deserves a mechanical fix |
+| `a-pivot-in-pixels-is-a-pivot-at-one-size.md` | a coordinate is meaningless without its space |

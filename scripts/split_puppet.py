@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -43,7 +44,11 @@ ROOT = Path(__file__).resolve().parent.parent
 # How far each leg reaches up past its joint, in pixels of the source drawing.
 # It has to outlast the sweep: a tab of height h swings h*sin(angle) sideways,
 # so 70 covers about 19px at the 16 degrees this walk uses.
-TAB_ROWS = 70
+TAB_ROWS = 34
+
+# The widest angle the walk uses, from the rig. A tab has to stay hidden at all
+# of it, in both directions.
+SWING_DEG = 12
 
 # The character's own colours, from docs/ILLUSTRATION_SPEC.md. Read here rather
 # than copied so that changing the spec changes the splitter.
@@ -201,20 +206,38 @@ def split(src: Path, out_dir: Path) -> dict:
     if overlap:
         raise SystemExit(f"the two legs share {overlap} pixels, which ghosts when they move")
 
-    # The tab is only legitimate while the torso hides it. Checked, not assumed.
-    for n in ("leg_front", "leg_back"):
-        tabbed = masks[n][top:crotch]
-        exposed = int((tabbed & ~masks["torso"][top:crotch]).sum())
-        if exposed:
-            raise SystemExit(
-                f"{exposed} pixels of the {n} tab are not covered by the torso, "
-                "so they would show as a second copy the moment the leg turns"
-            )
+    # The tab cannot be made to disappear, so it is made soft.
+    #
+    # Two exact solutions were tried and both failed on this drawing. Keeping
+    # only the tab pixels whose whole orbit stays under the torso removed the
+    # ones doing the work and opened a slit at the crotch. Cutting the leg along
+    # an arc centred on the pivot, which rotation preserves, needs a radius
+    # larger than the hip is wide: the waist here is narrower than the trousers
+    # flaring below it, so an arc big enough to close the joint already sticks
+    # out of the body at rest.
+    #
+    # What is left is the answer the neck arrived at. A hard edge reads as a
+    # wedge; the same edge faded over its last rows reads as nothing, because
+    # the thing it lands on is paper of almost the same value. The tab is short,
+    # so the sweep is small, and it fades from fully opaque at the joint to
+    # nothing at its top.
+    alpha_f = alpha.astype(float)
+    for name in ("leg_front", "leg_back"):
+        rows = np.arange(top, crotch)
+        ramp = np.clip((rows - top) / max(1, crotch - top), 0, 1) ** 0.7
+        for y, k in zip(rows, ramp, strict=True):
+            sel = masks[name][y]
+            if sel.any():
+                alpha_f[y, sel] = alpha_f[y, sel] * k
 
+    # How far the top of the tab travels sideways at full swing. Reported so the
+    # number is a measurement rather than a hope.
+    sweep = (crotch - top) * math.sin(math.radians(SWING_DEG))
     out_dir.mkdir(parents=True, exist_ok=True)
     for name, m in masks.items():
         layer = a.copy()
-        layer[..., 3] = np.where(m, alpha, 0)
+        src_alpha = alpha_f if name in ("leg_front", "leg_back") else alpha.astype(float)
+        layer[..., 3] = np.where(m, np.rint(src_alpha).astype(np.uint8), 0)
         Image.fromarray(layer).save(out_dir / f"{name}.png")
 
     union = np.zeros_like(alpha, bool)
@@ -231,6 +254,7 @@ def split(src: Path, out_dir: Path) -> dict:
         "draw_order": ["leg_back", "leg_front", "torso"],
         "layers": {n: {"file": f"{n}.png"} for n in masks},
         "pivots": pivots,
+        "sweep_px": sweep,
     }
 
 
@@ -242,6 +266,7 @@ def main() -> int:
     rig = split(args.src.resolve(), args.out_dir.resolve())
     (args.out_dir / "rig.json").write_text(json.dumps(rig, indent=2) + "\n")
     print(f"crotch at y={rig['crotch']}, pivots {rig['pivots']}")
+    print(f"tab {TAB_ROWS} rows, sweeping {rig['sweep_px']:.1f}px at {SWING_DEG} degrees")
     print(f"wrote {len(rig['layers'])} layers and rig.json to {args.out_dir}")
     return 0
 

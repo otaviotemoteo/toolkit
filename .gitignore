@@ -46,6 +46,10 @@ docs/writeups/
 docs/solutions/free-credit-is-a-hypothesis.md
 docs/solutions/subscription-is-not-api-credit.md
 
+# The raw output of the layer cut. Regenerable in a second from the approved
+# cutout, and assembled into approved/*/scene/, which is what is tracked.
+briefs/*/approved/layers/
+
 # The archive of what each round of iteration produced.
 docs/history/*
 !docs/history/README.md

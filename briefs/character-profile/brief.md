@@ -53,6 +53,8 @@ blue throughout.
 He walks on nothing. The background is plain empty off-white paper, with no
 ground line under his feet and no shadow anywhere.
 
+## Note on the control section
+
 **On the section below.** It is used instead of `## Prompt` when a control image
 supplies the composition. The control image here is a canny edge map of the
 approved character, which holds his build and his clothing edges while leaving

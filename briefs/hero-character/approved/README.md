@@ -9,7 +9,7 @@ this pipeline that cannot be undone.
 
 ## hero-character-v1
 
-Approved by Otávio on 2026-09-07. The recipe, so it can be reproduced or used as
+Approved on 2026-09-07. The recipe, so it can be reproduced or used as
 a starting point:
 
 | | |
@@ -36,14 +36,14 @@ to chase them.
 
 ## hero-character-v2
 
-Approved by Otávio on 2026-09-07, and the character the project actually uses.
+Approved on 2026-09-07, and the character the project actually uses.
 
 | | |
 |---|---|
 | `hero-character-v2-source.png` | the original, 1254x1254, figure alone on white |
 | `hero-character-v2-cutout.png` | RGBA, 370x1173, background removed |
 
-**Not produced by this pipeline.** Otávio generated it in ChatGPT, which is the
+**Not produced by this pipeline.** It was generated in ChatGPT, which is the
 split this project had already reasoned its way to: the still is a
 prompt-adherence problem and an instruction-following model is better at it,
 while identity across assets is a compositing problem and belongs here.
@@ -59,3 +59,30 @@ The cutout comes from `scripts/cutout_flat.py` at tolerance 3, erode 2. On
 `PAPER` and `PAPER-DEEP` the edge is invisible. On a dark ground a faint pale
 fringe is still visible, inherited from the light stroke in the source art. Not
 fixed, because every ground in this project is paper.
+
+
+## scene/
+
+The hero as the animation consumes it: a plate, three character layers, and a
+manifest that says where each goes and what turns about what.
+
+| File | What |
+|---|---|
+| `plate.png` | the desk, cut out of the approved scene, background removed |
+| `body.png` | the figure from the base of the neck down. Never moves |
+| `head.png` | everything above, including the neck, with the eyes lifted off |
+| `eyes.png` | the two ovals alone |
+| `scene.json` | placement, draw order, pivot, and the limits of the motion |
+
+Produced by `scripts/split_layers.py` from `hero-character-v2-cutout.png`, plus
+`scripts/postprocess.py` and `scripts/cutout_flat.py` for the plate. Rebuilding
+it is a script run, not a decision, which is why only the approved sources are
+irreplaceable.
+
+`scene.json` is the contract between this repository and whatever renders the
+hero. `make scene` checks it against the files beside it; `preview/index.html`
+is the harness that proves it composes.
+
+The cuts and the pivot are not arbitrary and should not be nudged without
+reading `docs/solutions/two-raster-layers-cannot-share-a-pixel.md` first. Four
+rebuilds are behind them.

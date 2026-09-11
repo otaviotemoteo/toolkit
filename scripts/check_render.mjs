@@ -136,4 +136,36 @@ if (failed) {
   console.log(`\ncheck_render: ${failed} of ${scenes.length} manifests failed`);
   process.exit(1);
 }
-console.log(`check_render: ${scenes.length} manifest(s) ok at ${WIDTHS.length} render sizes`);
+// The puppet has its own runtime and its own manifest, and the same rule: a
+// pivot written in the drawing's pixels is a pivot at one size only.
+const rigs = (await Array.fromAsync(glob("briefs/*/approved/puppet/rig.json", { cwd: ROOT })))
+  .sort()
+  .map((p) => resolve(ROOT, p));
+if (rigs.length) {
+  const puppet = await import(pathToFileURL(resolve(ROOT, "preview/puppet.js")).href);
+  for (const path of rigs) {
+    const rig = JSON.parse(await readFile(path, "utf8"));
+    const [cw, ch] = rig.canvas;
+    for (const [name, pivot] of Object.entries(rig.pivots ?? {})) {
+      for (const w of WIDTHS) {
+        const h = w * (ch / cw);
+        const got = parseOrigin(puppet.originFor(rig, name), w, h);
+        const want = [(pivot[0] / cw) * w, (pivot[1] / ch) * h];
+        if (Math.abs(got[0] - want[0]) > TOLERANCE || Math.abs(got[1] - want[1]) > TOLERANCE) {
+          console.log(`FAIL  ${relative(ROOT, path)}`);
+          console.log(`      what: joint ${name} turns off its pivot at ${w}px wide`);
+          console.log("      why:  a hip that moves tears the trouser off the body");
+          console.log("      fix:  express the origin as a share of the element's box");
+          failed++;
+        }
+      }
+    }
+    console.log(`ok    ${relative(ROOT, path)}`);
+  }
+}
+
+if (failed) {
+  console.log(`\ncheck_render: ${failed} failure(s)`);
+  process.exit(1);
+}
+console.log(`check_render: ${scenes.length + rigs.length} manifest(s) ok at ${WIDTHS.length} render sizes`);

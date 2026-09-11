@@ -51,6 +51,8 @@ right edge.
 Everything rests on one horizontal ground line, on plain empty off-white paper.
 The man is roughly as tall as the desk is wide.
 
+## Note on the control section
+
 **On the section below.** It is used instead of `## Prompt` when a control image
 supplies the composition, and it is much shorter on purpose: the control image
 already says where everything is, so the prose says only what everything is made

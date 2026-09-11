@@ -48,3 +48,5 @@ will be learned again.
 | `512-answers-some-questions-and-lies-about-others.md` | cheap runs answer one kind of question only |
 | `the-model-has-no-memory.md` | drift is sampling, not inconsistency |
 | `the-negative-block-was-carrying-the-style.md` | a distilled model cannot hold this style at all |
+| `two-raster-layers-cannot-share-a-pixel.md` | overlapping cuts of one drawing ghost when they move |
+| `correct-the-image-not-the-prompt.md` | a mechanical defect deserves a mechanical fix |

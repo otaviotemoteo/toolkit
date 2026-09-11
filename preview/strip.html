@@ -1,0 +1,106 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>strip preview</title>
+<style>
+  :root { --paper:#F7F6F3; --ink:#16161A; --soft:#5A5A66; --edge:#D6D3CB;
+          --accent:#5D5D9C; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+         font:14px/1.5 ui-sans-serif,-apple-system,sans-serif; }
+  header, footer { max-width:1100px; margin:0 auto; padding:40px 24px; }
+  h1 { font-size:18px; margin:0 0 4px; }
+  p.sub { color:var(--soft); margin:0 0 8px; max-width:60ch; }
+
+  /* Pin and scrub, with no library: a tall spacer supplies the scroll
+     distance and the strip sticks inside it. The reader keeps control of the
+     scroll, which is the whole difference between this and scroll-jacking. */
+  .scrub { height:300vh; position:relative; }
+  .stage { position:sticky; top:0; height:100vh; display:flex;
+           align-items:center; justify-content:center; }
+  .strip { width:min(1100px, 94vw); display:grid; grid-template-columns:repeat(3,1fr);
+           gap:10px; position:relative; }
+  .panel { aspect-ratio:4/3; border:1px solid var(--edge); border-radius:10px;
+           background:#fff; position:relative; overflow:hidden; }
+  .panel figcaption { position:absolute; left:8px; top:6px; font-size:11px;
+                      color:var(--soft); background:#fff9; padding:1px 5px;
+                      border-radius:5px; z-index:3; }
+  .panel.done { border-color:var(--accent); }
+  /* The walker travels over the whole strip, not inside one panel. */
+  .track { position:absolute; inset:0; pointer-events:none; z-index:2; }
+  #walker { height:74%; bottom:6%; }
+  #ending { position:absolute; height:74%; bottom:6%; opacity:0;
+            transition:opacity .18s linear; }
+  #ending img { height:100%; }
+  .meter { max-width:1100px; margin:0 auto; padding:0 24px 40px;
+           color:var(--soft); font-variant-numeric:tabular-nums; }
+</style>
+
+<header>
+  <h1>strip preview</h1>
+  <p class="sub">Scroll. He walks the three panels and the last one cuts to the
+     approved front-facing drawing. Nothing is generated: three files, two
+     rotations and a translation.</p>
+  <p class="sub">Panel backgrounds are placeholders. They are the next asset.</p>
+</header>
+
+<div class="scrub" id="scrub">
+  <div class="stage">
+    <div class="strip" id="strip">
+      <figure class="panel" style="margin:0"><figcaption>01 · cenário em chamas</figcaption></figure>
+      <figure class="panel" style="margin:0"><figcaption>02 · fogo vira linha</figcaption></figure>
+      <figure class="panel done" style="margin:0"><figcaption>03 · cena limpa</figcaption></figure>
+      <div class="track" id="track">
+        <div id="walker"></div>
+        <div id="ending"><img alt="" src="../briefs/hero-character/approved/scene/body.png"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="meter">progress <output id="p">0.00</output> · distance <output id="d">0</output> px</p>
+
+<footer>
+  <p class="sub">prefers-reduced-motion shows panel three only, which is what the
+     wireframe asks for.</p>
+</footer>
+
+<script type="module">
+  import { mountPuppet } from "./puppet.js";
+
+  const track = document.getElementById("track");
+  const walker = document.getElementById("walker");
+  const ending = document.getElementById("ending");
+  const scrub = document.getElementById("scrub");
+  const po = document.getElementById("p"), dof = document.getElementById("d");
+
+  const pup = await mountPuppet(walker, "../briefs/character-profile/approved/puppet/rig.json");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // He enters from outside the left edge and stops where the last panel starts,
+  // so the cut to the front-facing drawing happens inside panel three.
+  function place(t) {
+    const w = track.clientWidth;
+    const start = -walker.clientWidth;
+    const stop = w * 0.72;
+    const walkEnd = 0.82;                 // the last fifth is the turn
+    const k = Math.min(1, t / walkEnd);
+    const x = start + (stop - start) * k;
+    walker.style.left = `${x}px`;
+    pup.setDistance(x - start);
+    const turned = t > walkEnd;
+    walker.style.opacity = turned ? 0 : 1;
+    ending.style.opacity = turned ? 1 : 0;
+    ending.style.left = `${stop}px`;
+    po.value = t.toFixed(2);
+    dof.value = Math.round(x - start);
+  }
+
+  function onScroll() {
+    const r = scrub.getBoundingClientRect();
+    const total = scrub.offsetHeight - window.innerHeight;
+    const t = Math.max(0, Math.min(1, -r.top / total));
+    place(still ? 1 : t);
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
+</script>

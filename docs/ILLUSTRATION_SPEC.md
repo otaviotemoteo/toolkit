@@ -24,9 +24,8 @@ version reads as calm without reading as generic.
 
 Colour is therefore the baseline, not the signal. What carries meaning is
 **difference between assets**: the character, the furniture and the machine are
-identical everywhere, and only the screens change. That is what makes a set of
-eighteen illustrations read as one place at different moments rather than as
-eighteen drawings.
+identical wherever they appear, so the set reads as one place at different
+moments rather than as a pile of separate drawings.
 
 This replaced an earlier rule, that colour lived only in the machinery. That
 rule was coherent and it was abandoned deliberately, because the coloured
@@ -132,20 +131,23 @@ searching lines per limb, not twenty.
 
 ## What changes between assets, and what never does
 
-This is the rule that replaced "colour lives in the machinery", and it is what
-makes a set of illustrations read as one world instead of eighteen drawings.
+This is the rule that replaced "colour lives in the machinery".
 
-**Never changes.** The character: his face, hair, build, clothes and their
-colours. The desk, the tower, the cables, the pen cup, their positions and their
-colours. The line register. The palette.
+**Never changes, anywhere.** The line register and the palette. And wherever the
+character or the desk appear: his face, hair, build, clothes and their colours,
+the desk, the tower, the cables, the pen cup, their positions and their colours.
 
-**Changes per asset.** What is on the screens, and nothing else. The difference
-between two assets is the difference between two moments at the same desk: a
-diff, a test run, a stack trace, a graph, a terminal mid-command.
+**Within the desk scenes, only the screens change.** The difference between two
+of them is the difference between two moments at the same desk: a diff, a test
+run, a stack trace, a graph, a terminal mid-command. Those briefs carry a
+`## Screens` section, and it is the only field expected to differ.
 
-Each brief therefore carries a `## Screens` section saying what the code is
-doing in that particular image. It is the only field expected to differ from one
-asset to the next.
+**Outside the desk scenes, everything changes but the register.** The set this
+spec serves is small and mostly not the desk: a shared spreadsheet, two contrasting
+personas, a stack of layers, a three panel strip. They share the palette, the
+line weight and the flat mass, and nothing else. An earlier version of this file
+claimed the whole set was one desk with different screens on it. That was
+written before the inventory existed, and the inventory says otherwise.
 
 ## Composition
 

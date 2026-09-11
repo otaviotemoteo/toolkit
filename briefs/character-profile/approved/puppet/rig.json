@@ -30,9 +30,10 @@
       671
     ]
   },
+  "sweep_px": 7.068997487803817,
   "walk": {
     "period_px": 260,
-    "swing_deg": 16,
+    "swing_deg": 12,
     "bob_px": 26,
     "joints": {
       "leg_front": -1,

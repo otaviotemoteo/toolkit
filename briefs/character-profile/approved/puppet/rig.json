@@ -1,0 +1,42 @@
+{
+  "canvas": [
+    583,
+    1085
+  ],
+  "crotch": 671,
+  "draw_order": [
+    "leg_back",
+    "leg_front",
+    "torso"
+  ],
+  "layers": {
+    "leg_front": {
+      "file": "leg_front.png"
+    },
+    "leg_back": {
+      "file": "leg_back.png"
+    },
+    "torso": {
+      "file": "torso.png"
+    }
+  },
+  "pivots": {
+    "leg_front": [
+      325,
+      671
+    ],
+    "leg_back": [
+      216,
+      671
+    ]
+  },
+  "walk": {
+    "period_px": 260,
+    "swing_deg": 16,
+    "bob_px": 26,
+    "joints": {
+      "leg_front": -1,
+      "leg_back": 1
+    }
+  }
+}

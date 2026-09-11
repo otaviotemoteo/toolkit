@@ -49,7 +49,7 @@ The rule written here was: a guidance-distilled model is not usable for this
 visual system at all, and any backend reporting `uses_negative = False` is for
 experiments only, never for a candidate.
 
-**Otávio approved that image as the new direction for the project.** So the rule
+**The developer approved that image as the new direction for the project.** So the rule
 is retracted, and the retraction is more instructive than the rule was.
 
 What survives is the observation, which was accurate: without the negative block

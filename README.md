@@ -101,8 +101,22 @@ IMAGE_BACKEND=local ./.venv/bin/python src/generate.py briefs/hero-character/bri
 IMAGE_BACKEND=local-cn ./.venv/bin/python src/generate.py briefs/hero-character/brief.md \
     --control reference-drawing.png --control-strength 0.85
 
-make check          # lint, briefs, anchors, solutions, mutation, smoke
+make check          # lint, briefs, anchors, solutions, scene, mutation, smoke
+
+# correct a generated image instead of generating it again
+./.venv/bin/python scripts/postprocess.py in.png out.png --clean-ground
+
+# remove a plain background, keeping white interiors
+./.venv/bin/python scripts/cutout_flat.py in.png out.png --trim
+
+# cut an approved character into the layers the animation moves
+./.venv/bin/python scripts/split_layers.py character.png out/
 ```
+
+To see the result move, serve the repository root and open
+`preview/index.html`. That page is a harness, not a site: it renders the same
+`scene.json` a real page would, and carries a nine-state grid so a regression is
+visible without moving anything.
 
 `make check` runs in under a second and needs no key. It includes deliberately
 broken fixtures, so every check is watched failing on every run: a check with a
@@ -115,13 +129,21 @@ wrong glob and a check that works are indistinguishable in a terminal otherwise.
 | `docs/workspace.md` | what is deliberately untracked, and what belongs there |
 | `src/adapters/` | one interface, one backend per file, chosen by `IMAGE_BACKEND` |
 | `src/generate.py` | brief plus anchor, sent to whichever backend is selected |
-| `scripts/` | the checks, the cutout, the recomposer, the contact sheet |
+| `scripts/` | the checks, the cutout, the splitter, the post-processor |
+| `preview/` | a harness for watching the layers compose. Not a site |
 | `briefs/<name>/approved/` | approved assets, with the recipe beside each |
 
 Adding a backend is a file in `src/adapters/` implementing `generate()` and
 `available()`, plus a line in the registry. `fake.py` is the shortest example.
 
-Python 3.11, Pillow and numpy. Local generation uses
+**Beyond generating.** An image is a sample, so a defect fixed by generating
+again is fixed by luck. `scripts/postprocess.py` corrects mechanical defects
+mechanically: erasing shading the generator added to the background, and pulling
+large flat areas onto the spec's own palette. `scripts/split_layers.py` cuts an
+approved character into a static body, a head that rotates and eyes that
+translate, finding the joint by measuring rather than by being told where it is.
+
+Python 3.11, Pillow, numpy and OpenCV. Local generation uses
 [mflux](https://github.com/mflux-community/mflux) on Apple Silicon. Background
 removal is `scripts/cutout_flat.py`, which treats the background as the region
 connected to the border rather than as a colour to match, so a white shirt on

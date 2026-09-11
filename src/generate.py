@@ -77,6 +77,17 @@ def subject_from_brief(path: Path, heading: str = "## Prompt") -> str:
     body = m.group(1).strip()
     if not body:
         raise SystemExit(f"the {heading!r} section in {path} is empty")
+    # Everything under the heading is sent verbatim, so a note to the reader
+    # written here is sent to the model as if it described the picture. This
+    # happened: a paragraph explaining when the control section is used sat
+    # inside ## Prompt and was sent with every run. Prompt prose never needs
+    # bold, so bold is the marker of commentary that escaped.
+    if "**" in body:
+        raise SystemExit(
+            f"the {heading!r} section in {path} contains bold text, which means "
+            "a note to the reader is inside the prompt and is being sent to the "
+            "model. Move it under its own '## ' heading."
+        )
     return body
 
 

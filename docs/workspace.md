@@ -78,6 +78,12 @@ open and what they cost, no code depends on either, and the transferable part is
 already a hard constraint in `CLAUDE.md`. A stranger cloning this does not need
 a record of someone else's billing.
 
+### `briefs/<name>/approved/layers/`
+
+The raw output of `scripts/split_layers.py`. Untracked because it is assembled
+into `approved/<name>/scene/`, which is tracked, and rebuilding it from the
+approved cutout takes a second. The decision is the scene; this is the sawdust.
+
 ### `docs/history/`
 
 The archive of rejected frames and iteration rounds. Has its own README, which
@@ -93,6 +99,7 @@ is tracked. See it for the shape of a round.
 | `docs/workspace.md` | this file |
 | `src/`, `scripts/`, `Makefile` | the pipeline, the checks, and the single verification command |
 | `tests/fixtures/` | deliberately broken inputs, so every check can be watched failing |
+| `preview/` | the harness that proves a scene manifest composes |
 | `briefs/<name>/brief.md` | worked examples of the format the whole system depends on |
 | `briefs/<name>/approved/` | approved assets and the recipe that produced each |
 

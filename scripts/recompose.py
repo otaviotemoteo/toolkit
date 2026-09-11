@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Rebuild a scene from the pieces of an approved image, without generating.
 
-Written the moment Otávio pointed out the obvious: re-rolling a whole image to
+Written the moment the obvious was pointed out: re-rolling a whole image to
 change the size of one object throws away the character that was just approved,
 when the pieces are already separable. Every generation is a new sample; a
 composite is arithmetic.

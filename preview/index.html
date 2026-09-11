@@ -1,0 +1,108 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>hero preview</title>
+<style>
+  :root { --paper:#F7F6F3; --ink:#16161A; --soft:#5A5A66; --edge:#D6D3CB; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+         font:14px/1.5 ui-sans-serif,-apple-system,sans-serif; }
+  main { max-width:1100px; margin:0 auto; padding:32px 24px 80px; }
+  h1 { font-size:18px; margin:0 0 4px; }
+  p.sub { color:var(--soft); margin:0 0 28px; }
+  #hero { width:100%; border:1px solid var(--edge); border-radius:14px; }
+  .panel { margin-top:24px; display:grid; gap:14px;
+           grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+  .ctl { border:1px solid var(--edge); border-radius:10px; padding:12px 14px;
+         background:#fff; }
+  .ctl label { display:block; font-weight:600; margin-bottom:6px; }
+  .ctl input[type=range] { width:100%; }
+  .ctl output { color:var(--soft); font-variant-numeric:tabular-nums; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+  button { font:inherit; padding:7px 12px; border:1px solid var(--edge);
+           border-radius:8px; background:#fff; cursor:pointer; }
+  button[aria-pressed=true] { background:var(--ink); color:var(--paper); }
+  .grid { margin-top:28px; display:grid; gap:10px;
+          grid-template-columns:repeat(3,1fr); }
+  .cell { border:1px solid var(--edge); border-radius:10px; overflow:hidden;
+          position:relative; background:#fff; }
+  .cell figcaption { position:absolute; left:8px; top:6px; font-size:11px;
+                     color:var(--soft); background:#fff9; padding:1px 5px;
+                     border-radius:5px; }
+  .outline [data-layer] { outline:1px dashed rgba(93,93,156,.9); }
+</style>
+
+<main>
+  <h1>hero preview</h1>
+  <p class="sub">Move the pointer over the scene. Nothing here is generated: every
+     state is the same four files, transformed.</p>
+
+  <div id="hero"></div>
+
+  <div class="row">
+    <button id="outline" aria-pressed="false">show layer bounds</button>
+    <button id="freeze" aria-pressed="false">follow pointer</button>
+  </div>
+
+  <div class="panel">
+    <div class="ctl">
+      <label for="x">horizontal <output id="xo">0.00</output></label>
+      <input id="x" type="range" min="-1" max="1" step="0.01" value="0">
+    </div>
+    <div class="ctl">
+      <label for="y">vertical <output id="yo">0.00</output></label>
+      <input id="y" type="range" min="-1" max="1" step="0.01" value="0">
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<script type="module">
+  import { mountHero } from "./hero.js";
+
+  const root = document.getElementById("hero");
+  const hero = await mountHero(root, "../briefs/hero-character/approved/scene/scene.json");
+  for (const [name, el] of Object.entries(hero.layers)) el.dataset.layer = name;
+
+  const x = document.getElementById("x"), y = document.getElementById("y");
+  const xo = document.getElementById("xo"), yo = document.getElementById("yo");
+  let following = false;
+
+  function drive() {
+    xo.value = (+x.value).toFixed(2);
+    yo.value = (+y.value).toFixed(2);
+    if (!following) hero.aim(+x.value, +y.value);
+  }
+  x.oninput = y.oninput = drive;
+  drive();
+
+  const freeze = document.getElementById("freeze");
+  freeze.onclick = () => {
+    following = !following;
+    freeze.setAttribute("aria-pressed", String(following));
+    if (!following) drive();
+  };
+  root.addEventListener("pointermove", () => { if (!following) drive(); }, true);
+
+  const outline = document.getElementById("outline");
+  outline.onclick = () => {
+    const on = root.classList.toggle("outline");
+    outline.setAttribute("aria-pressed", String(on));
+  };
+
+  // A fixed grid of states, so a regression is visible without moving anything.
+  const states = [[-1,-1,"far left, up"], [0,-1,"centre, up"], [1,-1,"far right, up"],
+                  [-1,0,"far left"],     [0,0,"rest"],        [1,0,"far right"],
+                  [-1,1,"far left, down"],[0,1,"centre, down"],[1,1,"far right, down"]];
+  const grid = document.getElementById("grid");
+  for (const [gx, gy, label] of states) {
+    const fig = document.createElement("figure");
+    fig.className = "cell";
+    fig.style.margin = "0";
+    const box = document.createElement("div");
+    fig.append(box, Object.assign(document.createElement("figcaption"),
+                                  { textContent: label }));
+    grid.append(fig);
+    const cell = await mountHero(box, "../briefs/hero-character/approved/scene/scene.json");
+    cell.aim(gx, gy);
+  }
+</script>

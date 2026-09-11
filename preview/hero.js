@@ -13,6 +13,37 @@
 //
 // Nothing here generates anything. Every state is the same four files.
 
+// Which layers turn on which joint. The eyes turn on the head's joint because
+// they are part of the face; the body and the plate turn on nothing. Exported
+// so scripts/check_render.mjs checks the layers that actually move, rather than
+// a list it keeps privately and that stops matching the day this one changes.
+export const TURNS_WITH = { head: ["head", "eyes"] };
+
+// Where a layer turns, as a CSS transform-origin.
+//
+// The pivot is a point in the character's own pixel space, but the layer on the
+// page is an <img> that CSS scales to whatever width the container gives it. An
+// origin written in those pixels is correct at exactly one render size and
+// silently wrong at every other, and being wrong costs nothing visible until it
+// costs everything: at file resolution the head turned on its neck, and in a
+// 92px preview cell the same number put the pivot almost three head heights
+// below the chin, so the neck swung 21px clear of the collar.
+//
+// A percentage is the same point at every size, because the browser measures it
+// against the element's own box rather than against a number we remembered from
+// a file. See docs/solutions/a-pivot-in-pixels-is-a-pivot-at-one-size.md.
+//
+// Exported because scripts/check_render.mjs tests this function rather than a
+// copy of its arithmetic: a check that reimplements what it checks only proves
+// the two agreed on the day they were written.
+export function originFor(scene, name, joint) {
+  const ch = scene.character;
+  const L = ch.layers[name];
+  const pivot = ch.pivots[joint];
+  return `${(pivot[0] / ch.file_size[0]) * 100}% ` +
+         `${((pivot[1] - L.top) / L.height) * 100}%`;
+}
+
 export async function mountHero(root, sceneUrl) {
   const scene = await fetch(sceneUrl).then((r) => r.json());
   const base = sceneUrl.replace(/[^/]*$/, "");
@@ -45,15 +76,9 @@ export async function mountHero(root, sceneUrl) {
     root.appendChild(el);
   }
 
-  // Pivots are in the character's own pixel space, so they scale with it and
-  // are expressed relative to each layer's own top-left corner.
-  const originFor = (name, pivot) => {
-    const L = ch_.layers[name];
-    return `${pivot[0]}px ${pivot[1] - L.top}px`;
-  };
-  for (const name of ["head", "eyes"]) {
+  for (const name of TURNS_WITH.head) {
     if (!layerEl[name]) continue;
-    layerEl[name].style.transformOrigin = originFor(name, ch_.pivots.head);
+    layerEl[name].style.transformOrigin = originFor(scene, name, "head");
     layerEl[name].style.willChange = "transform";
   }
 

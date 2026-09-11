@@ -51,3 +51,4 @@ will be learned again.
 | `two-raster-layers-cannot-share-a-pixel.md` | overlapping cuts of one drawing ghost when they move |
 | `correct-the-image-not-the-prompt.md` | a mechanical defect deserves a mechanical fix |
 | `a-pivot-in-pixels-is-a-pivot-at-one-size.md` | a coordinate is meaningless without its space |
+| `clean-ground-cannot-see-an-outline-that-is-not-there.md` | a pale subject is continuous with the paper |

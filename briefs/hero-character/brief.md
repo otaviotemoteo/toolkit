@@ -5,7 +5,7 @@
 **The idea in one sentence:** the person who built all of this, standing beside
 the machine that runs it, at rest and paying attention.
 
-**Reference:** two images Otávio generated before this project started. The
+**Reference:** two images generated before this project started. The
 first is full colour, cartoon, warm; the pose and framing are exactly right and
 this brief keeps them. The second is the same scene in black and white, and it
 is the useful failure: it is too heavy, because the shirt, trousers, monitors

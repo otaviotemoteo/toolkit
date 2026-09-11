@@ -77,3 +77,37 @@ both, plus two other ways a manifest rots, so the check is watched failing.
 Rules 1 to 3 live in `scripts/split_layers.py`, which is what produces the cut,
 with the reasoning in its docstring so the next person to widen the tab meets
 the argument first.
+
+## The hip, and why the exact solutions lost
+
+The walking puppet hit the same seam one joint lower, and it is worth recording
+that the two *correct* answers both failed on this drawing while the soft one
+worked.
+
+A leg cut straight across at the crotch opens a wedge of bare paper when it
+turns, because the cut line rotates and the body above it does not. The fix is a
+tab reaching up past the joint, hidden by the torso. That tab then has the
+opposite problem: turned the other way it swings outward and its corner appears
+beyond the hip as a blue wedge.
+
+**Keeping only the tab pixels whose whole orbit stays under the torso** is
+exact, and it deletes precisely the pixels that were doing the work: the ones
+near the silhouette, which are the ones that swing down to cover the wedge. The
+protrusion became a slit.
+
+**Cutting the leg along an arc centred on the pivot** is the textbook answer,
+because rotation preserves distance from the pivot and an arc maps to itself. It
+needs a radius at least as large as the leg is wide at the joint. Measured here:
+the trousers span about 100px at the crotch while the waist above them spans
+128px and sits offset, so an arc big enough to close the joint already leaves
+the body at rest. The drawing's own proportions rule it out.
+
+What worked is what the neck used: **a short tab with its alpha fading out.**
+Short, so the sweep is small, 34 rows sweeping 7px at 12 degrees. Faded, so the
+part that does leave the body is a few percent of opacity landing on paper of
+almost the same value, which is invisible where a hard edge was a wedge.
+
+The general lesson is not about hips. **An exact fix that deletes the thing it
+was protecting is worse than an approximate one that hides its own error**, and
+in flat raster art a soft edge hides a great deal, because there is so little
+contrast for it to betray.

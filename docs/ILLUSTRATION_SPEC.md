@@ -77,6 +77,14 @@ the system and they still sit below a highlighter.
 | `CODE-C` | `#6E9E6B` |
 | `CODE-D` | `#C9A34E` |
 
+`CODE-B` and `CODE-D` do double duty as the flame colours in the strip. That is
+not decoration: they are the only warm colours in this system, so warm means
+fire, and `scripts/lift_fire.py` separates the flames from their own drawing by
+colour alone with nothing to judge. The price is a rule, and it is load-bearing.
+**A scene containing fire must contain no lit screen**, or the two are the same
+colour and the fire cannot be lifted. It is written into
+`briefs/strip-scene/brief.md` as an acceptance criterion.
+
 Paper steps for edges and surfaces, taken from the wireframe:
 `#E2E1DC`, `#DCDAD3`, `#D6D3CB`, `#CBC8C0`.
 

@@ -239,16 +239,25 @@ Two rules follow from that mechanism, and both are load-bearing:
   once is the model being pulled in both directions, and what comes out is a
   half measure rather than either instruction.
 
+**The anchor carries only what is true of every asset.** It used to name the
+desk, the monitor bezels, the tower and the screens, and that clause was sent
+with every run of every brief. A brief asking for a figure alone on empty paper
+got a workstation three clauses later and the model drew one, in all six
+samples. The clause was also redundant: both desk briefs describe the desk in
+their own prose, colours included. What is not universal belongs in the brief
+that wants it.
+
+Nothing was added to the negative block in its place. A shared prohibition on
+desks would break the brief whose subject is a desk.
+
 Positive. Replace `<KEY_COLOR>`.
 
 ```text
 flat illustration with clean rounded forms and a fine paper grain, flat even
 lighting across the whole scene, every surface one even area of muted colour
 laid down without blending, light skin, dark brown
-hair, plain white t-shirt, blue trousers, black sneakers, brown wooden desk,
-matte black monitor bezels, matte black computer tower, dark screens carrying
-lines of code in muted syntax colours, plain empty <KEY_COLOR> background,
-generous padding around the artwork
+hair, plain white t-shirt, blue trousers, black sneakers,
+plain empty <KEY_COLOR> background, generous padding around the artwork
 ```
 
 Negative.

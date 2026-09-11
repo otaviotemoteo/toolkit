@@ -9,9 +9,8 @@ docs/ILLUSTRATION_SPEC.md   the visual system. One copy of each prompt anchor
 src/adapters/base.py        the interface. Nothing above it knows which vendor ran
 src/adapters/fake.py        placeholder, no key, no cost, no network
 src/adapters/local_mflux.py mflux on Apple Silicon, plus the ControlNet variant
-src/adapters/openai_backend.py
-src/adapters/gemini.py
-src/adapters/zenmux.py      never executed. See docs/decisions.md
+src/adapters/openai_compatible.py  every vendor speaking the OpenAI image API
+src/adapters/gemini.py      its own file: the response is a tree, not a list
 src/adapters/__init__.py    the registry, selected by IMAGE_BACKEND
 src/generate.py             brief plus anchor, sent to the selected backend
 scripts/                    the checks, the cutout, the recomposer, the sheet
@@ -19,6 +18,12 @@ briefs/<name>/brief.md      one per asset
 briefs/<name>/approved/     frozen assets, with the recipe beside each
 briefs/<name>/out/          untracked build output, with a sidecar per image
 ```
+
+**One file per protocol, not one per vendor.** Two hosted adapters were written
+and, stripped of their names, differed in four lines. A vendor is data now: an
+entry in `PROVIDERS`, or nothing at all and `IMAGE_ENDPOINT` in the environment.
+The file count tracks the number of ways there are to talk, which is small, and
+not the number of companies, which is not.
 
 ## Why the adapter exists
 

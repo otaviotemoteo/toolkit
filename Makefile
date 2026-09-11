@@ -6,6 +6,7 @@
 #   make briefs     every asset directory carries its brief
 #   make anchors    the positive and negative blocks do not contradict
 #   make solutions  every recorded lesson still names a live enforcement
+#   make scene      every scene manifest describes files that exist
 #   make mutation   proves the briefs check is capable of failing
 #   make smoke      the pipeline runs end to end, no key, no cost
 #   make setup      create the venv and install both requirement files
@@ -14,9 +15,9 @@
 PY  := ./.venv/bin/python
 PIP := ./.venv/bin/pip
 
-.PHONY: check lint briefs anchors solutions mutation smoke setup setup-local
+.PHONY: check lint briefs anchors solutions scene mutation smoke setup setup-local
 
-check: lint briefs anchors solutions mutation smoke
+check: lint briefs anchors solutions scene mutation smoke
 	@echo "check: ok"
 
 lint:
@@ -30,6 +31,9 @@ anchors:
 
 solutions:
 	@$(PY) scripts/check_solutions.py
+
+scene:
+	@$(PY) scripts/check_scene.py
 
 # Every fixture under tests/fixtures/ is broken on purpose and must be rejected.
 # If one of them passes, the check is the thing that is broken, not the fixture.
@@ -47,6 +51,9 @@ mutation:
 	done; \
 	if $(PY) scripts/check_solutions.py tests/fixtures/solutions >/dev/null 2>&1; then \
 		echo "MUTATION SURVIVED: tests/fixtures/solutions passed check_solutions and must not."; fail=1; \
+	fi; \
+	if $(PY) scripts/check_scene.py tests/fixtures/scenes/scene.json >/dev/null 2>&1; then \
+		echo "MUTATION SURVIVED: tests/fixtures/scenes passed check_scene and must not."; fail=1; \
 	fi; \
 	if [ $$fail -eq 1 ]; then \
 		echo "  A check cannot detect the thing it exists to detect."; exit 1; \

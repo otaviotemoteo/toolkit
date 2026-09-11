@@ -78,5 +78,5 @@ holds identity without holding everything else with it.
 
 ## Where it is enforced
 
-`CLAUDE.md`, in the iteration profile, and the Budget line of each brief which
+Hard constraint 10 in `CLAUDE.md`, and the Budget line of each brief which
 now names both numbers so the cost of an attempt is visible while writing one.

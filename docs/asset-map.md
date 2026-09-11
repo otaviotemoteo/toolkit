@@ -118,14 +118,20 @@ The five illustrated pieces, from the site inventory:
 | Asset | Route | State |
 |---|---|---|
 | hero character | fixed identity, motion | approved, animated, frozen |
-| shared spreadsheet | generation | not started |
-| two contrasting personas | generation | not started |
-| stack of layers | generation | not started |
-| three panel strip | generation, then motion | not started, and its motion route is open |
+| three panel strip | generation, then motion | not started. The only one left that has to be drawn |
+| shared spreadsheet | **code** | a spreadsheet and a forwarded subject line are interface, not illustration |
+| two contrasting personas | **code** | two interface densities side by side, which is the thing itself, not a picture of it |
+| stack of layers | **code** | firmware, queue, service, data with mono labels is a diagram |
 
 Plus one support asset:
 
 | `hero-desk` | generation | brief written, image generated, kept as proof the brief works. The shipped plate is a crop of the approved scene, because it shares lineage with the character and nothing has to be matched by eye |
+
+Three of the five were listed as illustrations and are not. A spreadsheet, two
+interface densities and a labelled stack are all interface, and drawing a picture
+of an interface costs more, comes out blurrier, cannot be themed and cannot be
+checked against the palette. The strip is the only one of the five that is
+genuinely a drawing: flames, then flames becoming a line, then a clean scene.
 
 **Not illustrations, and not made here.** The six card fragments, the six project
 page heroes, the architecture diagram and the eighteen screen recordings. The

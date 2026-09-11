@@ -91,7 +91,17 @@ def artwork_threshold(d: np.ndarray) -> int:
 
 def clean_ground(a: np.ndarray, keep: int | None = None, flat: int = 8,
                  guard: int = 3) -> tuple[np.ndarray, int]:
-    """Erase anything faint that sits on the background and is not artwork."""
+    """Erase anything faint that sits on the background and is not artwork.
+
+    **Not safe on a pale subject.** This finds the ground by walking inward from
+    the image border through everything faint. In a style with no outlines a
+    white t-shirt is a few units from the paper and continuous with it, so the
+    walk goes straight into the figure: run on the walking character it erased
+    the folds across his chest and reported success. Use it on a scene whose
+    subject is dark against paper, which is what it was written for, and leave
+    it off for anything pale. See
+    docs/solutions/clean-ground-cannot-see-an-outline-that-is-not-there.md.
+    """
     bg = border_colour(a)
     d = np.abs(a - bg).sum(axis=2)
     if keep is None:

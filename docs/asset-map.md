@@ -3,11 +3,12 @@
 What gets made, and by which route. Read this before opening a new brief: the
 route decides the brief's shape, the cost, and what can check the result.
 
-`docs/ILLUSTRATION_SPEC.md` sets the number at eighteen illustrations and says
-the thing that shrinks the work: **what changes between assets is what is on the
-screens, and nothing else.** The character, the desk, the tower, the cables,
-their positions and their colours never change. So most of what is left is not
-eighteen drawings. It is one drawing and seventeen screens.
+The set is smaller than it looks, and smaller than this file first claimed.
+**Five pieces are illustrations. Everything else on the site is code.** That
+comes from the inventory, not from an estimate: the wireframe marks the card
+fragments and the project page heroes as real screens in HTML with no frame, and
+the architecture diagram as one component driven by data that already exists in
+six project READMEs.
 
 ## The five routes
 
@@ -66,10 +67,12 @@ layers stay mutually exclusive, because two layers cut from one flat drawing
 cannot share a pixel. See
 `docs/solutions/two-raster-layers-cannot-share-a-pixel.md`.
 
-## Scene stills, the seventeen
+## Scene stills
 
-The spec's rule means each of these is the approved scene with different screen
-content: a diff, a test run, a stack trace, a graph, a terminal mid command.
+Where an asset is the same desk at a different moment, it is the approved scene
+with different screen content: a diff, a test run, a stack trace, a graph, a
+terminal mid command. Only one such asset is currently called for, so this route
+matters less than it appeared to and is not on the critical path.
 
 Screen content is the most deterministic thing in the project. It is monospaced
 text on a dark rectangle. It can be rendered exactly and placed on the monitor
@@ -110,11 +113,21 @@ Anything else that moves gets the same test first.
 
 ## Where each asset stands
 
+The five illustrated pieces, from the site inventory:
+
 | Asset | Route | State |
 |---|---|---|
-| `hero-character` | fixed identity, motion | approved, animated, frozen |
+| hero character | fixed identity, motion | approved, animated, frozen |
+| shared spreadsheet | generation | not started |
+| two contrasting personas | generation | not started |
+| stack of layers | generation | not started |
+| three panel strip | generation, then motion | not started, and its motion route is open |
+
+Plus one support asset:
+
 | `hero-desk` | generation | brief written, image generated, kept as proof the brief works. The shipped plate is a crop of the approved scene, because it shares lineage with the character and nothing has to be matched by eye |
 
-The remaining seventeen are not named yet. Naming them is a decision about the
-page, not about this repository, and a brief without a place to live is a brief
-nobody can accept.
+**Not illustrations, and not made here.** The six card fragments, the six project
+page heroes, the architecture diagram and the eighteen screen recordings. The
+first three are code. The recordings are recordings: no model makes them, and
+nothing in this repository should try.

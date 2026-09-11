@@ -1,0 +1,13 @@
+{
+  "canvas": [100, 100],
+  "plate": { "file": "plate.png", "x": 0, "y": 0 },
+  "character": {
+    "file_size": [50, 100],
+    "draw_order": ["body"],
+    "layers": {
+      "body": { "file": "body.png", "top": 10, "height": 90 },
+      "head": { "file": "head.png", "top": 0, "height": 30 }
+    },
+    "pivots": { "head": [25, 60] }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "canvas": [
+    1254,
+    1254
+  ],
+  "paper": "#F7F6F3",
+  "plate": {
+    "file": "plate.png",
+    "x": 440,
+    "y": 440
+  },
+  "character": {
+    "file_size": [
+      370,
+      1173
+    ],
+    "scale": 0.868,
+    "x": 110,
+    "y": 150,
+    "draw_order": [
+      "body",
+      "head",
+      "eyes"
+    ],
+    "layers": {
+      "body": {
+        "file": "body.png",
+        "top": 238,
+        "height": 935
+      },
+      "head": {
+        "file": "head.png",
+        "top": 0,
+        "height": 256
+      },
+      "eyes": {
+        "file": "eyes.png",
+        "top": 0,
+        "height": 256
+      }
+    },
+    "pivots": {
+      "head": [
+        178,
+        238
+      ]
+    },
+    "neck_band": [
+      195,
+      238
+    ],
+    "eye_boxes": [
+      [
+        139,
+        116,
+        14,
+        20
+      ],
+      [
+        202,
+        115,
+        14,
+        20
+      ]
+    ]
+  },
+  "limits": {
+    "lean_deg": 6.5,
+    "head_shift_px": 0,
+    "pupil_px": 3.5,
+    "pupil_py": 2.5,
+    "smoothing": 0.12
+  }
+}

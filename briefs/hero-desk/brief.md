@@ -15,8 +15,18 @@ See `docs/solutions/the-model-has-no-memory.md`.
 third is empty paper, reserved: `hero-character-v2-cutout.png` is composited
 there afterwards, and anything drawn in that space has to be thrown away.
 
-**Reference:** the approved `hero-character-v1.png` and the desk Otávio picked
-out of it. Wide and solid, a drawer unit built into one end, two identical
+**Reference and control image:** the desk from the approved scene, which already
+has the right style and is already seen straight on. Recreate the control with:
+
+```python
+src = Image.open("briefs/hero-character/approved/hero-scene-final.png")
+crop = src.crop((440, 440, 1190, 1175))          # the desk, clear of the figure
+# scale to 620 on the long side, paste bottom-right on a 1024 paper canvas,
+# leaving the left third empty for the character
+```
+
+That crop is also the fallback: if generation cannot match the style, the desk
+is already an asset and only needs compositing. Wide and solid, a drawer unit built into one end, two identical
 monitors, a laptop, and the tower standing on the floor rather than on the desk.
 
 **Forbidden:** any person, any part of a person, any hand, arm, shoulder or
@@ -44,12 +54,17 @@ ground line, and nothing touches the edge of the frame.
 
 ## Prompt with structure
 
-A brown wooden desk alone, no person and no part of a person anywhere. A cabinet
-of three drawers at its left end, open leg space to the right. Two identical
-widescreen monitors with matte black bezels on the desk top, an open laptop at
-the right end facing the viewer, a matte black tower standing on the floor
-beside the desk. Dark screens carrying lines of code in muted syntax colours.
-The left third of the image is empty paper.
+A brown wooden desk alone, no person and no part of a person anywhere. Seen from
+directly in front: the desk top reads as a straight horizontal band, the front
+panel as a flat rectangle, and every edge is parallel to the frame. A cabinet at its left
+end holding exactly three drawers, one above another, and open leg space to the
+right. Two identical widescreen monitors with matte black bezels on the desk
+top, an open laptop at the right end facing the viewer, and a matte black tower
+standing on the floor entirely clear of the desk, with a gap of empty paper
+between the tower and the nearest desk leg. Dark screens carrying lines of code
+in muted syntax colours. The desk and the tower meet the ground line directly,
+with clean empty paper immediately beneath and around both. The left third of
+the image is empty paper.
 
 ## Screens
 
@@ -72,6 +87,24 @@ nothing highlighted.
 - No readable words appear anywhere.
 - Composited beside `hero-character-v2-cutout.png` at a shared ground line, the
   two read as one drawing rather than as two pasted together.
+
+## Outcome, 2026-09-11
+
+Generated in two rounds. The first came back in three-quarter perspective with a
+soft drop shadow, four drawers and the tower overlapping the desk. Moving the
+perspective prohibition into the positive block, since this backend discards the
+negative one, and raising the control strength to 0.85 fixed the view and the
+count. The shadow survived both rounds, because nothing in a positive prompt
+reliably prevents a generator from drawing one, and was removed afterwards with
+`scripts/postprocess.py --clean-ground`.
+
+**What ships is not this file.** The hero uses the desk cropped out of the
+approved scene, for one reason: it and the character came from the same image,
+so nothing has to be matched by eye. The generated desk is kept as evidence that
+a brief can produce one, and as the fallback if the approved scene is ever lost.
+
+That is not a defeat for the pipeline. Compositing an approved asset is the
+pipeline, from the moment the animation stopped being generation.
 
 **Budget:** zero. Generated locally on `IMAGE_BACKEND=local-cn`.
 

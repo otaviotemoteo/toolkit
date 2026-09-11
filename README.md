@@ -101,7 +101,7 @@ IMAGE_BACKEND=local ./.venv/bin/python src/generate.py briefs/hero-character/bri
 IMAGE_BACKEND=local-cn ./.venv/bin/python src/generate.py briefs/hero-character/brief.md \
     --control reference-drawing.png --control-strength 0.85
 
-make check          # lint, briefs, anchors, solutions, scene, mutation, smoke
+make check          # lint, briefs, anchors, solutions, scene, render, mutation, smoke
 
 # correct a generated image instead of generating it again
 ./.venv/bin/python scripts/postprocess.py in.png out.png --clean-ground

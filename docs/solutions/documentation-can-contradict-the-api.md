@@ -40,4 +40,5 @@ unreadable `KeyError`.
 `src/adapters/gemini.py`: `find_image()` walks, `MIME` is overridable through
 `GEMINI_IMAGE_MIME` so the day PNG is accepted is a variable and not a patch,
 and the `HTTPError` handler reads the body before re-raising. The same handler
-shape is in `openai_backend.py`.
+shape is in `openai_compatible.py`, which is where every vendor that does
+follow its own documentation ends up.

@@ -101,3 +101,23 @@ And the one that only a person can judge.
 asked at 512 first.
 **Estimated cost:** zero. Generated locally on `IMAGE_BACKEND=local`, which has
 no account and no quota.
+
+## Recipe
+
+The approved drawing did not come from this pipeline, so it has no prompt and
+cannot be regenerated. What follows is reproducible from the drawing.
+
+```bash
+python3 scripts/postprocess.py approved/profile-walk-v1.png /tmp/w.png --snap-palette
+python3 scripts/cutout_flat.py /tmp/w.png approved/profile-walk-cutout.png --tolerance 6 --trim
+python3 scripts/split_puppet.py approved/profile-walk-cutout.png approved/puppet
+```
+
+`--clean-ground` is deliberately absent. It erased the folds on the shirt and
+said it had succeeded: see
+`docs/solutions/clean-ground-cannot-see-an-outline-that-is-not-there.md`.
+
+**Open, with a trigger.** Knees, elbows and a swinging arm. The legs alone carry
+a walk at strip size, and every extra joint is another seam in a flat drawing
+that supports one joint per limb. Cut them when the walk reads stiff beside the
+finished backgrounds, not before.

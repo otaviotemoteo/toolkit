@@ -38,6 +38,10 @@ SPEC = ROOT / "docs" / "ILLUSTRATION_SPEC.md"
 # name in the spec, which calls them code colours.
 WARM = ("CODE-B", "CODE-D")
 
+# Upper hue bound for fire, in degrees. Yellow sits near 50; 70 keeps the pale
+# centres and stops short of anything green.
+WARM_HUE_MAX = 70
+
 
 def spec_tokens() -> dict[str, tuple[int, int, int]]:
     """Every token in the spec, read at run time so the two cannot drift."""
@@ -55,15 +59,32 @@ def lift(src: Path, min_area: int = 400) -> tuple[np.ndarray, dict]:
     a = np.array(im)
     rgb = a[..., :3].astype(int)
 
+    # Warm is measured as hue, not as the nearest token. The first version asked
+    # which token each pixel was closest to and kept CODE-B and CODE-D. It missed
+    # 17 percent of the fire, all of it where a flame crosses the dark rack: the
+    # flame there is drawn darker, a burnt orange around #A2663F, and that sits
+    # nearer WOOD, the desk brown, than either flame token. The rule the brief
+    # states is "warm means fire", so the code now measures warmth directly.
+    #
+    # The two flame tokens still have to exist in the spec: they are what the
+    # brief tells the model to draw with, and a spec that dropped them would be
+    # drawing fire in colours it no longer defines.
     tokens = spec_tokens()
     missing = [n for n in WARM if n not in tokens]
     if missing:
         raise SystemExit(f"the spec no longer defines {missing}; fire has no colour")
 
-    names = list(tokens)
-    d = np.stack([np.abs(rgb - np.array(tokens[n])).sum(-1) for n in names], -1)
-    nearest = np.array(names)[np.argmin(d, -1)]
-    warm = np.isin(nearest, WARM)
+    f = rgb / 255.0
+    mx, mn = f.max(-1), f.min(-1)
+    sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1e-6), 0)
+    r, g, b = f[..., 0], f[..., 1], f[..., 2]
+    d = mx - mn + 1e-9
+    hue = np.where(mx == r, ((g - b) / d) % 6,
+                   np.where(mx == g, (b - r) / d + 2, (r - g) / d + 4)) * 60
+    # Red through yellow, clearly saturated, not so dark it is really shadow.
+    # The paper is below 0.05 saturation and the rack is a cool grey, so neither
+    # comes close to these bounds.
+    warm = ((hue < WARM_HUE_MAX) | (hue > 330)) & (sat > 0.25) & (mx > 0.25)
 
     # Anti-aliased edges between a flame and the paper land halfway and read as
     # neither. Closing pulls them in, so the lifted flame keeps its own outline

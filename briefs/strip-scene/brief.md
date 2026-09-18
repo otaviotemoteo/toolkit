@@ -82,3 +82,19 @@ Then the visual system.
 **Budget:** one image per iteration, 1024x1024, PNG. Composition questions at 512.
 **Estimated cost:** zero locally, or one hosted image. Both routes are open and
 `docs/cost.md` has the numbers.
+
+## Recipe
+
+`approved/scene-calm-v1.png` came from a hosted chat model, so it has no prompt
+on record and cannot be regenerated. Measured on arrival: no warm pixels, the
+left third empty to within 6 units of its own paper, nothing lit.
+
+```bash
+python3 scripts/cutout_flat.py approved/scene-calm-v1.png approved/scene-calm-cutout.png --tolerance 8
+```
+
+No `--snap-palette`. The drawing arrived already flat, and snapping pulled the
+rack's single grey onto three different dark tokens and left it mottled. A
+correction is for a defect; applied to a clean image it is the defect. The
+subject held at 21.7 percent of the frame across tolerances 8, 12 and 16, which
+is the sign the cut found the rack and not the paper texture.

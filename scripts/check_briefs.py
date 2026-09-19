@@ -20,6 +20,7 @@ drift apart into disagreeing about what a valid brief is.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -53,6 +54,28 @@ def problems(asset_dir: Path) -> list[tuple[str, str, str]]:
             "generate.py sends everything under '## Prompt' as the subject; "
             "without that heading there is nothing to send",
             f"add a '## Prompt' section to {brief} describing the scene",
+        ))
+
+    # A word in the brief's prompt that also sits in the shared negative block is
+    # sent to the model as something to draw and something to avoid in the same
+    # run, and the two cancel. check_anchors.py only ever compared the anchor with
+    # itself; the briefs are where the collisions actually turned up, two of them
+    # in the first six card briefs ("glow" and "frame"). See
+    # docs/solutions/never-both-blocks.md.
+    try:
+        subject = generate.subject_from_brief(brief).lower()
+        _, negative = generate.diffusion_anchor(generate.DEFAULT_KEY)
+    except SystemExit:
+        subject, negative = "", ""
+    terms = [t.strip().lower() for t in negative.replace("\n", " ").split(",") if t.strip()]
+    hits = sorted({t for t in terms if re.search(r"\b" + re.escape(t) + r"s?\b", subject)})
+    if hits:
+        found.append((
+            f"the prompt uses {hits}, which the negative block forbids",
+            "a word asked for and forbidden in the same run cancels itself, and "
+            "what comes out is a half measure of both",
+            f"rephrase those words in {brief}, or move the idea to the acceptance "
+            "criteria if it was meant as a prohibition",
         ))
 
     text = brief.read_text(encoding="utf-8")

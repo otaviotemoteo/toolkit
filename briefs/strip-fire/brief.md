@@ -38,7 +38,7 @@ A tall dark server rack stands alone on plain off-white paper, seen straight on,
 and it is on fire. Flames rise from the gaps between its horizontal slots and
 lick up both of its sides, reaching a little above the top of the cabinet. The
 flames are drawn as clean rounded tongues of flat colour, warm orange with paler
-yellow centres, with no glow around them and no blending inside them.
+yellow centres, each tongue a crisp hard-edged shape of solid colour.
 
 The rack occupies the right two thirds of the image. The left third is empty
 off-white paper with nothing in it at all. Everything rests on one horizontal
@@ -57,7 +57,7 @@ image, which is the normal case here.
 
 The same dark server rack, on fire. Flames rising from the gaps between its
 slots and up both sides, drawn as rounded tongues of flat warm orange with paler
-yellow centres, no glow, no blending, no smoke, no sparks. The cabinet stays
+yellow centres, crisp hard-edged shapes of solid colour, clean air around them. The cabinet stays
 dark and unlit, the paper around it stays plain off-white with no warm tint.
 
 ## Acceptance

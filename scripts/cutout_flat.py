@@ -37,6 +37,11 @@ def main() -> None:
                          "half-background pixels along every edge")
     ap.add_argument("--feather", type=float, default=0.8,
                     help="blur radius on the alpha edge, in pixels")
+    ap.add_argument("--onto", default=None,
+                    help="flatten onto this colour instead of keeping alpha, e.g. "
+                         "'#F7F6F3'. For images that stay on their own ground, like the "
+                         "project cards, where the model tinted the paper and the fix is "
+                         "to repaint it, not to cut the subject out")
     ap.add_argument("--trim", action="store_true",
                     help="crop the result to the subject")
     args = ap.parse_args()
@@ -92,6 +97,16 @@ def main() -> None:
         box = rgba.getbbox()
         if box:
             rgba = rgba.crop(box)
+
+    if args.onto:
+        # Repainting the ground is the same cut, finished differently. The model
+        # was asked for off-white paper and painted it mint or yellow, the way it
+        # tints every flat ground it is given. Regenerating to get the colour
+        # right is a lottery; replacing the region connected to the border with
+        # the real paper is a function.
+        ground = Image.new("RGBA", rgba.size, args.onto)
+        ground.alpha_composite(rgba)
+        rgba = ground.convert("RGB")
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     rgba.save(args.out)

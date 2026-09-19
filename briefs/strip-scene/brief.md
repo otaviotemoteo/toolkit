@@ -44,7 +44,7 @@ to the floor, drawn as simple lines in a soft grey.
 
 The rack occupies the right two thirds of the image. The left third is empty
 off-white paper with nothing in it at all. Everything rests on one horizontal
-ground line. Nothing glows, nothing is lit, and no screen appears anywhere.
+ground line. Every light is off, every surface is matte, and the cabinet front is plain dark panels.
 
 ## Note on the control section
 
@@ -57,7 +57,7 @@ says where they are.
 A tall dark server rack alone on plain off-white paper, its front face a stack
 of horizontal slots, a few tiny status marks in muted blue and muted green, two
 or three soft grey cables curving from its lower back to the floor. Flat even
-colour, no glow, no lit screen, no figure, no shadow. The left third of the
+colour, every light off, matte surfaces, no figure, no shadow. The left third of the
 image is empty paper.
 
 ## Acceptance

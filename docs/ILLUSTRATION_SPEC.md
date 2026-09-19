@@ -258,13 +258,19 @@ that wants it.
 Nothing was added to the negative block in its place. A shared prohibition on
 desks would break the brief whose subject is a desk.
 
+The character's clothes left the anchor for the same reason, later. They were
+sent with every run, and the project cards show other people: six strangers
+would have come out wearing his shirt and his jeans. Both character briefs
+already describe him in their own prose, so nothing was lost there. Text went
+the other way, into the negative, because no asset here wants any and a local
+model asked for none still writes garbage letters onto every screen and sign.
+
 Positive. Replace `<KEY_COLOR>`.
 
 ```text
 flat illustration with clean rounded forms and a fine paper grain, flat even
 lighting across the whole scene, every surface one even area of muted colour
-laid down without blending, light skin, dark brown
-hair, plain white t-shirt, blue trousers, black sneakers,
+laid down without blending,
 plain empty <KEY_COLOR> background, generous padding around the artwork
 ```
 
@@ -276,7 +282,7 @@ airbrush, gradient, highlight, specular, glow, bloom, blur, soft shadow, cast
 shadow, drop shadow, ambient occlusion, depth of field, vignette, wall,
 wallpaper, scenery, shape behind the subject, halftone dots, stippling, neon,
 garish, oversaturated, plants, mugs, sticky notes, posters, watermark,
-signature, frame, border, cropped
+signature, frame, border, cropped, text, letters, numbers, writing
 ```
 
 ## Retry, do not regenerate

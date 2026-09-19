@@ -31,3 +31,23 @@ Everything stands on one horizontal ground line on plain empty off-white paper.
 
 **Budget:** composition at 768x432, candidates at 1024x576, 16:9.
 **Estimated cost:** zero. Local, `IMAGE_BACKEND=local`.
+
+## Recipe
+
+Generated locally, three seeds at 768x432 and 12 steps, and the draft stamped
+`221404` chosen by eye against the acceptance list above. Promoted to 1024x576
+by passing that draft back in as the init image rather than by reusing its seed:
+a seed at another resolution is a different picture. Strength 0.75 kept the
+composition and redrew the detail; 0.55 reinterpreted the scene.
+
+```bash
+MFLUX_CACHE_GB=2 MFLUX_SEED=11 MFLUX_STEPS=20 IMAGE_BACKEND=local \
+  python3 src/generate.py briefs/card-personal-tracker/brief.md --size 1024x576 \
+  --init <draft upscaled to 1024x576> --init-strength 0.75
+python3 scripts/postprocess.py <that output> approved/card-personal-tracker-v1.png --white-balance
+```
+
+The model tinted the whole image, not only the ground, and `--white-balance`
+removes that cast. See `docs/solutions/a-colour-cast-is-not-uniform.md`.
+`MFLUX_CACHE_GB=2` because at the default 6 this machine went into swap and one
+draft took 31 minutes instead of 74 seconds.

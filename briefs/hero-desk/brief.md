@@ -50,13 +50,13 @@ syntax colours.
 
 The desk occupies the right two thirds of the image. The left third is empty
 off-white paper with nothing in it at all. Everything rests on one horizontal
-ground line, and nothing touches the edge of the frame.
+ground line, and everything sits well inside the edges of the picture.
 
 ## Prompt with structure
 
 A brown wooden desk alone, no person and no part of a person anywhere. Seen from
 directly in front: the desk top reads as a straight horizontal band, the front
-panel as a flat rectangle, and every edge is parallel to the frame. A cabinet at its left
+panel as a flat rectangle, and every edge is parallel to the edges of the picture. A cabinet at its left
 end holding exactly three drawers, one above another, and open leg space to the
 right. Two identical widescreen monitors with matte black bezels on the desk
 top, an open laptop at the right end facing the viewer, and a matte black tower

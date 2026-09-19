@@ -43,3 +43,14 @@ crudely singularises the words, and fails on any intersection.
 
 The fixture at `tests/fixtures/anchors/overlap-spec.md` is the real mistake,
 preserved, so `make mutation` can be watched catching it.
+
+## The briefs, too
+
+The rule was enforced on the anchor alone for weeks, and the collisions were in
+the briefs the whole time. When `scripts/check_briefs.py` began comparing each
+brief's prompt against the shared negative block, it failed three approved
+briefs at once, and two of the three were the older mistake in
+`prohibitions-do-not-belong-in-the-positive.md` wearing new words: "nothing
+glows" and "no glow around them", written into a prompt as prohibitions and
+aiming the model straight at glow. The fixture is
+`tests/fixtures/briefs/prompt-hits-negative/`.

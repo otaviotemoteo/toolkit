@@ -159,24 +159,59 @@ def snap_palette(a: np.ndarray, min_area: int = 2000,
     return out, moved
 
 
+def white_balance(a: np.ndarray, paper=(247, 246, 243), border: int = 12,
+                  reach: float = 0.30, floor: float = 0.15) -> tuple[np.ndarray, list]:
+    """Remove a colour cast, using the paper as the known white.
+
+    The local model tints every flat ground it is given: mint, sage, pale
+    yellow. The tint is not only in the ground, it sits over the whole image,
+    so repainting the ground alone leaves grey houses green. What the image
+    should look like is known at one point, the paper, so the gap between the
+    ground it drew and the real paper measures the cast, the way a camera
+    reads it off a grey card.
+
+    Applied uniformly it overshoots: a green apron the brief asked for turns
+    blue. So the correction is full on near-neutral pixels, where the cast is
+    all there is, and fades on saturated ones, which are object colour. The
+    ground's own saturation is subtracted first, because on a tinted image the
+    ground is the one thing whose saturation is entirely cast.
+    """
+    b = border
+    edge = np.concatenate([a[:b].reshape(-1, 3), a[-b:].reshape(-1, 3),
+                           a[:, :b].reshape(-1, 3), a[:, -b:].reshape(-1, 3)])
+    bg = np.median(edge, axis=0).astype(float)
+    gain = np.array(paper, float) / np.maximum(bg, 1)
+    mx, mn = a.max(axis=2), a.min(axis=2)
+    sat = (mx - mn) / np.maximum(mx, 1)
+    bsat = (bg.max() - bg.min()) / max(bg.max(), 1)
+    w = np.clip(1 - (sat - bsat) / reach, floor, 1)[..., None]
+    out = np.clip(a * (1 + (gain - 1) * w), 0, 255).astype(int)
+    return out, [int(v) for v in bg]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("src", type=Path)
     ap.add_argument("out", type=Path)
     ap.add_argument("--clean-ground", action="store_true")
     ap.add_argument("--snap-palette", action="store_true")
+    ap.add_argument("--white-balance", action="store_true",
+                    help="remove the colour cast, reading white off the paper")
     ap.add_argument("--keep", type=int, default=None,
                     help="above this distance it is artwork. Detected when omitted")
     ap.add_argument("--guard", type=int, default=3,
                     help="pixels of protection around artwork edges")
     args = ap.parse_args()
 
-    if not (args.clean_ground or args.snap_palette):
-        raise SystemExit("nothing to do: pass --clean-ground or --snap-palette")
+    if not (args.clean_ground or args.snap_palette or args.white_balance):
+        raise SystemExit("nothing to do: pass --clean-ground, --snap-palette or --white-balance")
 
     im = Image.open(args.src).convert("RGB")
     a = np.asarray(im).astype(int)
 
+    if args.white_balance:
+        a, bg = white_balance(a)
+        print(f"white-balance: ground was {tuple(bg)}, now paper")
     if args.clean_ground:
         a, n = clean_ground(a, keep=args.keep, guard=args.guard)
         print(f"clean-ground: {n} pixels of shading removed")

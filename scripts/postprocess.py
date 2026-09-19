@@ -163,30 +163,59 @@ def white_balance(a: np.ndarray, paper=(247, 246, 243), border: int = 12,
                   reach: float = 0.30, floor: float = 0.15) -> tuple[np.ndarray, list]:
     """Remove a colour cast, using the paper as the known white.
 
-    The local model tints every flat ground it is given: mint, sage, pale
-    yellow. The tint is not only in the ground, it sits over the whole image,
-    so repainting the ground alone leaves grey houses green. What the image
-    should look like is known at one point, the paper, so the gap between the
-    ground it drew and the real paper measures the cast, the way a camera
-    reads it off a grey card.
+    The local model tints every flat ground it is given, mint, sage, pale
+    yellow, and the tint sits over the whole image, so repainting the ground
+    alone leaves grey houses green. What the image should look like is known at
+    one point, the paper, so the gap between the ground it drew and the real
+    paper gives the direction and the size of the cast.
 
-    Applied uniformly it overshoots: a green apron the brief asked for turns
-    blue. So the correction is full on near-neutral pixels, where the cast is
-    all there is, and fades on saturated ones, which are object colour. The
-    ground's own saturation is subtracted first, because on a tinted image the
-    ground is the one thing whose saturation is entirely cast.
+    It took three versions, and the two that failed are the useful part.
+
+    A per-channel gain, the textbook white balance, turned a green apron the
+    brief asked for blue. Weighting it down on saturated pixels saved the apron
+    and still turned a pale mint counter pink, because a light mint times the
+    gain clips red and blue at 255 while green stops, and what is left is
+    magenta. Moving it into Lab to stop the clipping kept the pink anyway, and
+    that showed the actual mistake: the cast is not uniform. The model painted
+    the ground very green and the counter only slightly green, so subtracting
+    the ground's green from the counter pushes it past neutral.
+
+    So each pixel loses the part of the cast it carries itself, measured along
+    the cast's direction in the a-b plane, and never more than it has or more
+    than the cast is. Nothing can be pushed past neutral. Saturated pixels, which
+    are object colour, are weighted down; lightness moves only for pixels near
+    the ground's own lightness, so the ground lands on the paper.
+    See docs/solutions/a-colour-cast-is-not-uniform.md.
     """
+    rgb = np.clip(a, 0, 255).astype(np.uint8)
+    lab = cv2.cvtColor(rgb, cv2.COLOR_RGB2LAB).astype(float)
     b = border
-    edge = np.concatenate([a[:b].reshape(-1, 3), a[-b:].reshape(-1, 3),
-                           a[:, :b].reshape(-1, 3), a[:, -b:].reshape(-1, 3)])
-    bg = np.median(edge, axis=0).astype(float)
-    gain = np.array(paper, float) / np.maximum(bg, 1)
-    mx, mn = a.max(axis=2), a.min(axis=2)
-    sat = (mx - mn) / np.maximum(mx, 1)
-    bsat = (bg.max() - bg.min()) / max(bg.max(), 1)
-    w = np.clip(1 - (sat - bsat) / reach, floor, 1)[..., None]
-    out = np.clip(a * (1 + (gain - 1) * w), 0, 255).astype(int)
-    return out, [int(v) for v in bg]
+    edge = np.concatenate([lab[:b].reshape(-1, 3), lab[-b:].reshape(-1, 3),
+                           lab[:, :b].reshape(-1, 3), lab[:, -b:].reshape(-1, 3)])
+    bg = np.median(edge, axis=0)
+    pl = cv2.cvtColor(np.array([[paper]], np.uint8), cv2.COLOR_RGB2LAB)[0, 0].astype(float)
+
+    cast = bg[1:] - pl[1:]
+    mag = float(np.linalg.norm(cast))
+    u = cast / max(mag, 1e-6)
+
+    f = rgb.astype(float)
+    sat = (f.max(axis=2) - f.min(axis=2)) / np.maximum(f.max(axis=2), 1)
+    bg_px = bg.reshape(1, 1, 3).astype(np.uint8)
+    bg_rgb = cv2.cvtColor(bg_px, cv2.COLOR_LAB2RGB)[0, 0].astype(float)
+    bsat = (bg_rgb.max() - bg_rgb.min()) / max(bg_rgb.max(), 1)
+    w = np.clip(1 - (sat - bsat) / reach, floor, 1)
+
+    carried = (lab[..., 1:] - pl[1:]) @ u
+    remove = np.clip(carried, 0, mag) * w
+    out = lab.copy()
+    out[..., 1:] -= remove[..., None] * u
+    near = np.clip(1 - np.abs(lab[..., 0] - bg[0]) / 25, 0, 1)
+    out[..., 0] += (pl[0] - bg[0]) * near
+
+    res = cv2.cvtColor(np.clip(out, 0, 255).astype(np.uint8), cv2.COLOR_LAB2RGB).astype(int)
+    ground = cv2.cvtColor(bg.reshape(1, 1, 3).astype(np.uint8), cv2.COLOR_LAB2RGB)[0, 0]
+    return res, [int(v) for v in ground]
 
 
 def main() -> None:

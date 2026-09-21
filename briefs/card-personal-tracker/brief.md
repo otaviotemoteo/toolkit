@@ -13,9 +13,12 @@ See `docs/asset-map.md`.
 ## Prompt
 
 A person with short curly hair and a muted mustard sweater sits at a small
-round table in the morning, smiling slightly as they tap their phone. Beside
-the phone on the table stands a small desk calendar, a grid of square days where
-most of the squares are filled solid muted green and a few are empty.
+round table on the right half of the picture, smiling slightly as they tap
+their phone. On the left half stands a wooden easel holding a large board. On
+the board is a round chart divided into twelve wedges of different lengths, like
+a flower with uneven petals in muted indigo, muted green, muted orange and muted
+mustard, and below it a small grid of square days where most squares are filled
+solid muted green.
 
 Everything stands on one horizontal ground line on plain empty off-white paper.
 
@@ -34,16 +37,20 @@ Everything stands on one horizontal ground line on plain empty off-white paper.
 
 ## Recipe
 
-Generated locally, three seeds at 768x432 and 12 steps, and the draft stamped
-`221404` chosen by eye against the acceptance list above. Promoted to 1024x576
+Generated locally. The first round put the figure alone in the right third with
+half the picture empty, and it read as somebody on a phone rather than as this
+product. The prompt gained the easel: a round chart of twelve uneven wedges,
+which is the method the app came from, over a strip of days mostly filled. Four
+more seeds at 768x432 and 12 steps, and the draft stamped `232351` chosen. Promoted to 1024x576
 by passing that draft back in as the init image rather than by reusing its seed:
-a seed at another resolution is a different picture. Strength 0.75 kept the
-composition and redrew the detail; 0.55 reinterpreted the scene.
+a seed at another resolution is a different picture. Strength 0.75 still reframed it and drained the green out of the days, so this
+one went at 0.85. The looser a picture's composition, the more strength it needs
+to survive being enlarged.
 
 ```bash
 MFLUX_CACHE_GB=2 MFLUX_SEED=11 MFLUX_STEPS=20 IMAGE_BACKEND=local \
   python3 src/generate.py briefs/card-personal-tracker/brief.md --size 1024x576 \
-  --init <draft upscaled to 1024x576> --init-strength 0.75
+  --init <draft upscaled to 1024x576> --init-strength 0.85
 python3 scripts/postprocess.py <that output> approved/card-personal-tracker-v1.png --white-balance
 ```
 

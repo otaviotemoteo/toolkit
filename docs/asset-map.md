@@ -118,7 +118,7 @@ The five illustrated pieces, from the site inventory:
 | Asset | Route | State |
 |---|---|---|
 | hero character | fixed identity, motion | approved, animated, frozen |
-| six project cards | generation, except one | five are scenes, approved. The benchmark card is a chart and is drawn by `scripts/draw_chart.py`, because a model cannot hold a line straight for a reason |
+| six project cards | generation | all six are scenes, approved. The benchmark card was tried twice as a chart, generated and then drawn, and both read as nothing: its meaning lives in exact values, and a card is looked at for three seconds. It became a scene like the others. `scripts/draw_chart.py` is kept as the fallback |
 | three panel strip | generation, then motion | not started. The only one left that has to be drawn |
 | shared spreadsheet | **code** | a spreadsheet and a forwarded subject line are interface, not illustration |
 | two contrasting personas | **code** | two interface densities side by side, which is the thing itself, not a picture of it |

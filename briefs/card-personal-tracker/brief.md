@@ -14,11 +14,12 @@ See `docs/asset-map.md`.
 
 A person with short curly hair and a muted mustard sweater sits at a small
 round table on the right half of the picture, smiling slightly as they tap
-their phone. On the left half stands a wooden easel holding a large board. On
-the board is a round chart divided into twelve wedges of different lengths, like
-a flower with uneven petals in muted indigo, muted green, muted orange and muted
-mustard, and below it a small grid of square days where most squares are filled
-solid muted green.
+their phone. On the left half, a large flat board is divided into a three by
+three grid of nine small square panels. Each panel holds one simple flat icon
+drawn in muted indigo, muted green, muted orange or muted mustard: a running
+shoe, an open book, a dumbbell, a water bottle, a bicycle, a guitar, a pair of
+headphones, a sun and a moon. Six of the panels carry a small muted green check
+mark in the corner, and one carries a small muted orange cross.
 
 Everything stands on one horizontal ground line on plain empty off-white paper.
 
@@ -39,9 +40,12 @@ Everything stands on one horizontal ground line on plain empty off-white paper.
 
 Generated locally. The first round put the figure alone in the right third with
 half the picture empty, and it read as somebody on a phone rather than as this
-product. The prompt gained the easel: a round chart of twelve uneven wedges,
-which is the method the app came from, over a strip of days mostly filled. Four
-more seeds at 768x432 and 12 steps, and the draft stamped `232351` chosen. Promoted to 1024x576
+product. The prompt first gained an easel holding a round chart of twelve wedges, which
+is the method the app came from. It read as a painting on a stand rather than as
+anything to do with habits. The easel became a board of nine panels, three by
+three, each holding one activity, most ticked and one crossed, which is what the
+app actually shows. Draft `20260921-161238` chosen: the other three seeds drifted
+to four columns and scrambled the icons. Promoted to 1024x576
 by passing that draft back in as the init image rather than by reusing its seed:
 a seed at another resolution is a different picture. Strength 0.75 still reframed it and drained the green out of the days, so this
 one went at 0.85. The looser a picture's composition, the more strength it needs

@@ -2,8 +2,8 @@
 
 **Where it lives:** the project card on the home grid, and larger at the top of
 the project's own page.
-**Type:** static illustration, 16:9, kept on its own paper ground, no cutout.
-**The idea in one sentence:** the model that scored almost perfectly falls apart on data from somewhere else.
+**Type:** drawn diagram, 16:9, on the same paper ground as the other cards.
+**The idea in one sentence:** the bait that the benchmark caught every time gets through on real traffic.
 
 **Why a scene and not a screen.** A card image that shows the product's interface
 would need text, and a diffusion model cannot write. The card shows the moment
@@ -12,16 +12,19 @@ See `docs/asset-map.md`.
 
 ## Prompt
 
-A simple flat line chart on plain empty off-white paper, and nothing else. A
-thick smooth line in muted indigo runs high and level across the left two thirds
-of the picture, then turns and drops steeply down toward the bottom right, the
-falling part drawn in muted orange. Three thin light grey horizontal guide lines
-sit behind it. The chart fills most of the picture with generous margins.
+A big fishing hook hangs from a thin dark line that comes down from the top
+edge of the picture, and a closed paper envelope is caught on the hook, tilted.
+Behind it, a simple flat line chart: a thick smooth line in muted indigo runs
+high and level across the left half, then drops steeply toward the bottom right,
+the falling part drawn in muted orange. Three thin light grey horizontal guide
+lines sit behind the chart.
+
+Plain empty off-white paper around everything, with generous margins.
 
 ## Acceptance
 
 - No letters, words or numbers anywhere, including on screens, charts and signs.
-- No people and no objects: only the chart.
+- No people. Only the hook, the envelope and the chart.
 - Every filled area is flat. No gradients, no glow, no cast shadow.
 - Muted, desaturated colours from the spec's Tokens table.
 - Plain off-white ground, no walls or scenery beyond the objects named.
@@ -32,20 +35,19 @@ sit behind it. The chart fills most of the picture with generous margins.
 
 ## Recipe
 
-Generated locally, three seeds at 768x432 and 12 steps, and the draft stamped
-`225752` chosen by eye against the acceptance list above. Promoted to 1024x576
-by passing that draft back in as the init image rather than by reusing its seed:
-a seed at another resolution is a different picture. Strength 0.75 kept the
-composition and redrew the detail; 0.55 reinterpreted the scene.
+**Not generated. Drawn.** Four seeds of a chart with a hooked envelope over it
+came back with the line bent into a worm and the hook floating attached to
+nothing, and the four before those were a plain chart that read as nothing at
+all. A chart is geometry: every value means something, and a model that cannot
+write cannot be trusted to hold a line straight for a reason either. This is the
+diagram route in `docs/asset-map.md`, and it is the first asset here to take it.
 
 ```bash
-MFLUX_CACHE_GB=2 MFLUX_SEED=11 MFLUX_STEPS=20 IMAGE_BACKEND=local \
-  python3 src/generate.py briefs/card-phishing/brief.md --size 1024x576 \
-  --init <draft upscaled to 1024x576> --init-strength 0.75
-python3 scripts/postprocess.py <that output> approved/card-phishing-v1.png --white-balance
+python3 scripts/draw_chart.py briefs/card-phishing/approved/card-phishing-v1.png
 ```
 
-The model tinted the whole image, not only the ground, and `--white-balance`
-removes that cast. See `docs/solutions/a-colour-cast-is-not-uniform.md`.
-`MFLUX_CACHE_GB=2` because at the default 6 this machine went into swap and one
-draft took 31 minutes instead of 74 seconds.
+The paper grain is generated from a fixed seed. Two earlier versions lifted it
+from an approved card: the first printed that card's whole scene in here as a
+ghost, and the second, taking only its high frequencies, printed its outlines
+embossed, because the high frequency of a drawing is its edges. Grain is noise,
+so grain is made.

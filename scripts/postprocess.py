@@ -185,7 +185,9 @@ def white_balance(a: np.ndarray, paper=(247, 246, 243), border: int = 12,
     than the cast is. Nothing can be pushed past neutral. Saturated pixels, which
     are object colour, are weighted down; lightness moves only for pixels near
     the ground's own lightness, so the ground lands on the paper.
-    See docs/solutions/a-colour-cast-is-not-uniform.md.
+    See docs/solutions/a-colour-cast-is-not-uniform.md, and
+    docs/solutions/cut-before-you-correct-the-cast.md for why this runs after a
+    cutout and never before one.
     """
     rgb = np.clip(a, 0, 255).astype(np.uint8)
     lab = cv2.cvtColor(rgb, cv2.COLOR_RGB2LAB).astype(float)

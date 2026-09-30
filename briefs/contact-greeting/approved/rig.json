@@ -1,0 +1,23 @@
+{
+  "canvas": [
+    640,
+    960
+  ],
+  "pivot": [
+    210,
+    426
+  ],
+  "wrist": 594,
+  "swing_deg": 150,
+  "turn": 1,
+  "side": "left",
+  "draw_order": [
+    "arm",
+    "body"
+  ],
+  "layers": {
+    "body": "body.png",
+    "arm_rest": "arm-rest.png",
+    "arm_wave": "arm-wave.png"
+  }
+}

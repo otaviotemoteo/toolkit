@@ -53,3 +53,7 @@ will be learned again.
 | `a-pivot-in-pixels-is-a-pivot-at-one-size.md` | a coordinate is meaningless without its space |
 | `clean-ground-cannot-see-an-outline-that-is-not-there.md` | a pale subject is continuous with the paper |
 | `a-colour-cast-is-not-uniform.md` | remove the cast each pixel carries, never more |
+| `cut-before-you-correct-the-cast.md` | the tint is what tells the shirt from the paper |
+| `the-second-drawing-is-a-different-person.md` | identity is below the level a brief can reach |
+| `a-layer-holds-only-the-pose-it-was-drawn-in.md` | a rotation cannot recover pixels off the canvas |
+| `zero-is-down-and-it-turns-the-other-way.md` | one angle convention, written down once |

@@ -106,6 +106,19 @@ the skin healed behind them. Nothing is generated at run time and nothing is
 generated per state. `plate` and `body` are byte-identical in every frame
 because they are the same files.
 
+The contact greeting closed the same way and harder: nothing in it is generated
+at all. The figure is the approved cutout cut up, the monitors are the approved
+plate's own monitors with their screens filled in, and the only new drawing is
+one arm, laid down by script on colours sampled from the character. The order to
+try things in is now written down: cut it, else draw it from the approved
+drawing's colours, else generate from it as an init. Generation is last because
+it is the only one that can come back with somebody else.
+
+**README.md is the manual**, written for someone arriving from another
+repository: how to generate, how to take the backend's cast out, how to cut a
+background off, how to write a brief that works, and what each failure usually
+means. Keep it accurate when any of those change.
+
 **Next:** the remaining assets. The character is a fixed input for all of them
 now, composited rather than redrawn, so identity across the set is a property
 rather than a risk.

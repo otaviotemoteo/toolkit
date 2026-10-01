@@ -39,31 +39,33 @@ def span(t: float, a: float, b: float) -> float:
 
 
 def pose(t: float, rig: dict) -> dict:
-    """The whole loop, as numbers. The one place the timing is written down.
+    """The whole loop, as numbers, read from the rig's own timeline.
 
-    The beats overlap on purpose. He notices before he rises, the shoulder
-    leaves before the elbow does and settles before it too, and the body starts
-    back down while the arm is still coming in. Nothing here begins only after
-    something else has finished, which is the difference between an animation
-    and a list of moves.
+    The windows are not written here. They are in rig.json, because the page
+    plays the same loop and a timeline written down twice is a timeline that
+    drifts: the contact sheet would stop being evidence about what ships.
     """
     rest, greet = rig["pose"]["rest"], rig["pose"]["greet"]
+    T = rig["timing"]
 
-    notice = span(t, 0.15, 0.23) - span(t, 0.80, 0.90)      # eyes and head
-    rise = span(t, 0.23, 0.43) - span(t, 0.78, 0.94)        # the body
-    sh = span(t, 0.28, 0.50) - span(t, 0.74, 0.89)          # shoulder
-    el = span(t, 0.32, 0.55) - span(t, 0.77, 0.93)          # elbow, late both ways
-    wr = span(t, 0.36, 0.58) - span(t, 0.75, 0.91)
+    def swing(name: str) -> float:
+        a, b, c, d = T[name]
+        return span(t, a, b) - span(t, c, d)
+
+    notice, rise = swing("notice"), swing("rise")
+    sh, el, wr = swing("shoulder"), swing("elbow"), swing("wrist")
 
     # Two wags at the top, damped, and only while the arm is actually up.
     wag = 0.0
-    if 0.58 < t < 0.76:
-        k = (t - 0.58) / 0.18
+    w0, w1 = T["wag"]
+    if w0 < t < w1:
+        k = (t - w0) / (w1 - w0)
         wag = math.sin(k * math.pi * 2.4) * rig["wag_deg"] * (1 - k) ** 0.7
 
     def lerp(a, b, k):
         return a + (b - a) * k
 
+    s0, s1 = T["shaka"]
     return {
         "rise": rise * rig["rise"],
         "head_deg": lerp(6.5, 0.0, notice),
@@ -72,7 +74,7 @@ def pose(t: float, rig: dict) -> dict:
         "shoulder": lerp(rest["shoulder"], greet["shoulder"], sh),
         "elbow": lerp(rest["elbow"], greet["elbow"], el) + wag,
         "wrist": lerp(rest["wrist"], greet["wrist"], wr) + wag * 0.6,
-        "shaka": 0.30 < t < 0.85,
+        "shaka": s0 < t < s1,
     }
 
 

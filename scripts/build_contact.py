@@ -56,10 +56,12 @@ SCENE = HERO / "scene"
 PLATE = SCENE / "plate.png"
 
 # The stage. 1.4:1, which is what the contact block gives the illustration.
-STAGE = (1000, 720)
+STAGE = (940, 680)
 DESK_Y = 560          # the desk's top edge; everything below it is hidden
-MONITOR_SCALE = 0.62
-MONITOR_X = (95, 905)
+MONITOR_SCALE = 0.9   # close to the plate's own resolution, so nothing is upscaled
+# One in the middle, which is what he sits behind, and one on the right to fill
+# the desk out. The paper to the left of the middle one is where the arm goes.
+MONITOR_X = (410, 755)
 SS = 3                # supersampling for everything this script draws
 
 # Sampled from the approved character and the approved plate, never invented.
@@ -72,19 +74,53 @@ WOOD = (176, 96, 58, 255)
 WOOD_EDGE = (150, 78, 45, 255)
 
 # The character, in the cutout's own 370x1173 pixels.
-CHAR_SCALE = 1.25
-CHAR_X = 340          # where the cutout's left edge lands on the stage
-REST_Y = 234          # where its top edge lands while he is working
-RISE = 134            # how far up he comes, in stage pixels
+# The character and the monitors come out of the same approved drawing, so how
+# big he is next to them is a measurement rather than a choice: the hero scene
+# places him at 0.868 against a plate drawn at 1.0. The first version of this
+# asset used 1.25 against monitors at 0.62, twice the right size, and a man
+# twice the height of his own monitor reads as a collage rather than a room.
+HERO_RATIO = 0.868
+CHAR_SCALE = HERO_RATIO * MONITOR_SCALE
+CHAR_X = 245          # where the cutout's left edge lands on the stage
+REST_Y = 224          # where its top edge lands while he is working
+RISE = 158            # how far up he comes, in stage pixels
 # Where the hand ends up, in stage pixels, with him already risen. The pose is
 # solved from this rather than guessed at in degrees: a target is something that
 # can be checked against the monitor it must not disappear behind, and a pair of
-# angles is not.
-GREET_WRIST = (305, 300)
+# angles is not. It is out to the side rather than next to his ear, because the
+# shoulder sits only just clear of the monitor and a hand held by the ear folds
+# the elbow to a hundred and thirty degrees to get there.
+GREET_WRIST = (215, 195)
+
+# The loop, as windows into it: [leaving, arrived, starting back, home]. It lives
+# in the rig because two things play it, the preview here and the page, and a
+# timeline written down twice is a timeline that drifts. A frame judged on a
+# contact sheet is only the frame that ships if both read the same numbers.
+#
+# The windows overlap on purpose. He notices before he rises, the elbow folds
+# before the shoulder opens and unfolds after it, and the body starts back down
+# while the arm is still coming in. Nothing begins only once something else has
+# finished, which is the difference between an animation and a list of moves.
+# The body does finish rising before the arm starts, and that one is not taste:
+# the shoulder is behind the monitor until he is up, and an arm whose shoulder
+# cannot be seen reads as an arm lying on the desk by itself.
+TIMING = {
+    "notice": [0.12, 0.20, 0.82, 0.92],
+    "rise": [0.18, 0.36, 0.80, 0.95],
+    "elbow": [0.36, 0.58, 0.78, 0.94],
+    "shoulder": [0.38, 0.60, 0.76, 0.91],
+    "wrist": [0.42, 0.64, 0.78, 0.93],
+    "wag": [0.66, 0.82],
+    # Both ends of this one are checked against the arm's own geometry rather
+    # than chosen: preview_contact.py prints how far the wrist is below the desk
+    # at each swap, and a gesture that appears over open paper is a pop.
+    "shaka": [0.26, 0.90],
+}
 
 NECK = 238            # the row split_layers cut the head at
 SHOULDER = (88, 300)  # the joint the arm turns about, in character pixels
-ARMHOLE = ((100, 262), (70, 440))  # the seam the torso is cut back to
+ARMHOLE = ((100, 262), (66, 470))  # the seam the torso is cut back to
+SLEEVE_HEM = 396      # the row below which the approved drawing is all arms
 
 SLEEVE_LEN = 104      # down the arm from the shoulder, in character pixels
 UPPER_LEN = 155
@@ -154,7 +190,10 @@ def monitor_back() -> Image.Image:
     the smallest edit that turns a front into a back.
     """
     plate = Image.open(PLATE).convert("RGBA")
-    mon = plate.crop((49, 24, 331, 272))          # one monitor, stand included
+    # One monitor with its stand. The crop stops at 259 on purpose: below that
+    # the plate has the keyboard, and a keyboard seen from above cannot be in a
+    # picture taken from behind the desk.
+    mon = plate.crop((49, 24, 331, 259))
     a = np.array(mon).astype(int)
     opaque = a[..., 3] > 128
 
@@ -202,6 +241,37 @@ def workstation() -> Image.Image:
 
 # ── the character ────────────────────────────────────────────────────────────
 
+def _shirt_below(img: Image.Image) -> Image.Image:
+    """Replace everything under the sleeve hem with a plain t-shirt.
+
+    The approved drawing has his arms crossed, and they cannot stay. At the
+    hero's own scale a seated man's forearms sit below the top of his own
+    monitor, which is true of every desk anyone has worked at, so no height of
+    desk and no amount of rise hides them: they show through the gap beside the
+    monitor's stand. And a pair of crossed forearms behind a man who is waving
+    is a man with three arms.
+
+    So below the sleeve hem the torso becomes what a t-shirt is: one flat shape,
+    wide at the sleeve caps and narrowing to the waist. It carries no arms at
+    all. Both of his real ones are accounted for: the one that waves is its own
+    layer, and the other is where a working man's other hand is, under the desk.
+    """
+    a = np.array(img)
+    rows = np.arange(a.shape[0])
+    cols = np.arange(a.shape[1])[None, :]
+    # Two anchors and a straight taper between them. The upper one is the
+    # silhouette at the hem, so the shape leaves the sleeves without a step.
+    t = np.clip((rows - SLEEVE_HEM) / 74.0, 0, 1)
+    left = 14 + (58 - 14) * t
+    right = 336 + (296 - 336) * t
+    band = rows >= SLEEVE_HEM
+
+    a[band] = 0
+    inside = band[:, None] & (cols >= left[:, None]) & (cols <= right[:, None])
+    a[inside] = SHIRT
+    return Image.fromarray(a, "RGBA")
+
+
 def _armhole_cut(img: Image.Image) -> Image.Image:
     """Erase the sleeve the arm layer is about to own, and round off what is left."""
     a = np.array(img)
@@ -232,7 +302,7 @@ def figure() -> tuple[Image.Image, Image.Image, Image.Image]:
 
     full = Image.new("RGBA", (370, 1173), (0, 0, 0, 0))
     full.alpha_composite(body_src, (0, NECK))
-    torso_src = _armhole_cut(full)
+    torso_src = _armhole_cut(_shirt_below(full))
 
     def lay(src: Image.Image, char_y: int) -> Image.Image:
         layer = Image.new("RGBA", STAGE, (0, 0, 0, 0))
@@ -418,6 +488,7 @@ def rig() -> dict:
             "greet": {"shoulder": 0.0, "elbow": 0.0, "wrist": 0.0},
         },
         "wag_deg": 7,
+        "timing": TIMING,
     }
 
 

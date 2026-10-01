@@ -159,7 +159,29 @@ rebuild:
 - **Zero is down and angles grow clockwise**, the CSS sense. See
   `docs/solutions/zero-is-down-and-it-turns-the-other-way.md`.
 
-The desk's height is not free either. The torso still carries the hero's crossed
-arms, so the desk has to stay above them at full rise: `RISE` at 134 leaves
-nineteen pixels of margin, and raising it further puts a second pair of forearms
-on the desk.
+**How big he is next to the monitors is a measurement, not a taste.** Both come
+out of the same approved drawing, and the hero scene places him at 0.868 against
+a plate drawn at 1.0, so `CHAR_SCALE` is derived from `MONITOR_SCALE` rather than
+chosen. The first build of v2 used 1.25 against monitors at 0.62, exactly twice
+the right size, and a man twice the height of his own monitor reads as a collage
+rather than as a room.
+
+**He sits behind the middle monitor and the right one fills the desk out.** At
+rest only his hair and eyes clear the top edge of the screen in front of him. The
+arm goes up in the open paper to the left of it, which is why he is placed where
+he is: the shoulder has to be far enough inside the monitor to be hidden while
+the arm hangs, and the body has to finish rising before the arm starts, because
+an arm whose shoulder cannot be seen reads as an arm lying on the desk by itself.
+
+**The crossed arms had to go.** At the hero's own scale a seated man's forearms
+are below the top of his own monitor, which is true of every desk anyone has
+worked at, so no height of desk hid them: they showed through the gap beside the
+stand. Below the sleeve hem the torso is now a plain t-shirt carrying no arms at
+all. Both of his are accounted for, one as its own layer and the other where a
+working man's other hand is.
+
+**`approved/v2/` is build output, not a decision.** Everything in it comes out of
+one command from files that are themselves approved, so it is regenerated rather
+than versioned, the same way `briefs/hero-character/approved/scene/` is. The
+irreplaceable assets here are the v1 sources, which came from noise and have no
+prompt.

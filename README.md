@@ -1,340 +1,160 @@
 # toolkit
 
-Generate the illustrations for a project and have them come out looking like one
+A small set of tools for generating illustrations that come out looking like one
 system instead of like six different afternoons.
 
-You write a **brief** saying what is in the picture. A **spec** says how
-everything is drawn. The two are joined and sent to whichever image model you
-have credit with, and the result lands next to the brief with the exact prompt
-saved beside it.
-
-This README is the manual. The reasoning lives in `docs/`, and `docs/solutions/`
-holds one file per mistake that cost something.
+**In one sentence:** you write a brief describing what should be in the picture,
+and it produces an image in a visual system defined once, from whichever image
+model you have credit with.
 
 ---
 
-## Install
+## What it's for
+
+Generating illustration for a project is easy to start and hard to keep
+consistent. The first image is fine. The fourth has a different line weight, the
+sixth picked up a gradient somewhere, and by the tenth the set no longer reads as
+belonging to the same hand. The usual fix is a designer, and the second usual fix
+is doing it by hand in a vector editor, which is the same fix with more evenings.
+
+This takes the other route: the visual system is written down once, in one file,
+and appended to every prompt automatically. A brief says what is in the scene.
+The style says how everything is drawn. Neither one can drift into the other.
+
+The trade is that it will not draw anything outside its own system. There is one
+palette, one texture, two line weights, and a rule that colour appears only on
+things that are running or moving. Asked for something warmer or softer or more
+detailed, the honest answer is that the system has to change first, in the file,
+where the change applies to everything already made. That is a real limitation
+and it is also the entire point.
+
+## What you actually do with it
+
+**Once, at the start.** Write the visual system in `docs/ILLUSTRATION_SPEC.md`:
+the colours, the texture, what is never allowed. There is exactly one copy of
+the style block, and every generated image gets it appended.
+
+**Per illustration.** Write a brief: where it lives, what must be in it, what
+must not, and how you will know it came out right. Run it with no backend
+configured to see the assembled prompt and a placeholder, which costs nothing
+and catches most mistakes. Then run it for real.
+
+**When something is wrong.** Change the brief, not the seed. The result lands in
+a versioned file with the exact prompt saved beside it, so the next attempt
+starts from what was actually sent rather than from memory.
+
+> **Coming from another repository, or just want the commands?**
+> **[`docs/guide.md`](docs/guide.md)** is the manual: generating, taking the
+> backend's colour cast out, cutting a background off, writing a brief that
+> works, building a rig, and a table of what each failure usually means. This
+> page is the tour; that one is the instructions.
+
+## The ideas behind it
+
+- **The style lives in one place and the subject lives in another.** A brief
+  describes a scene and never describes a line weight. Changing the visual system
+  is one edit, not a search through every brief ever written.
+- **No vendor is load-bearing, and none is required.** Generation sits behind a
+  single interface chosen by an environment variable, and the default real
+  backend runs on your own machine through mflux, with no account, no quota and
+  no cost. Hosted backends are there for when an instruction-following model is
+  the better tool, not because anything depends on one.
+- **A backend declares what it will ignore.** Guidance-distilled models accept a
+  negative prompt and discard it in silence, which quietly deletes half of a
+  visual system. Backends that do this say so, and the CLI prints how many
+  characters of prohibition are about to be thrown away.
+- **The default backend costs nothing and calls nobody.** It produces a
+  placeholder, which means the whole path can be exercised before any key exists,
+  and a broken pipeline can be told apart from a broken prompt.
+- **The prompt travels with the image.** An image whose prompt was lost can only
+  be guessed at again, never iterated on.
+- **Nothing approved is ever overwritten.** Filenames are timestamped. The one
+  mistake here that cannot be undone is silently replacing a good asset.
+
+- **Every lesson names what enforces it.** `docs/solutions/` holds one file per
+  mistake that cost something, each declaring whether a check, a spec rule or
+  plain prose is what stops it happening again. A check that no longer exists
+  fails the build, because a rule pointing at a deleted enforcement reads like a
+  guarantee and is a memory.
+
+## Where the images go
+
+Into `briefs/<name>/out/`, next to the brief that produced them, with a JSON
+sidecar holding the prompt, the backend, the model and the settings.
+
+The images themselves are build output and are not committed. The brief and the
+sidecar are, because those are what regenerate the image. If a specific asset
+should be versioned, add it explicitly.
+
+---
+
+## For developers
 
 ```bash
 make setup          # venv, runtime and dev requirements
-make setup-local    # the Apple Silicon generation stack. Large, and optional
-make check          # under a second, needs no key. Run it before you trust anything
-```
+make setup-local    # the Apple Silicon generation stack, large
 
-Copy `.env.example` to `.env` and set `IMAGE_BACKEND`. With no key at all it
-still runs: the `fake` backend writes a placeholder, which is enough to see the
-assembled prompt and catch most mistakes before spending anything.
-
-| `IMAGE_BACKEND` | What it is | Needs |
-|---|---|---|
-| `fake` | a placeholder image. The default | nothing |
-| `local` | mflux on Apple Silicon | `make setup-local` |
-| `local-cn` | the same, with a ControlNet input | `make setup-local` |
-| `openai` | OpenAI images | `OPENAI_API_KEY` |
-| `gemini` | Gemini images | `GEMINI_API_KEY` |
-| anything else | any OpenAI-compatible endpoint | `IMAGE_ENDPOINT`, `IMAGE_API_KEY`, `IMAGE_MODEL` |
-
-A vendor is data here, not code. Adding one is a row in `PROVIDERS` inside
-`src/adapters/openai_compatible.py`, or nothing at all plus three environment
-variables.
-
----
-
-## 1. Generate an image
-
-```bash
-# see the whole assembled prompt, generate nothing, spend nothing
+# see the assembled prompt, generate nothing, spend nothing
 ./.venv/bin/python src/generate.py briefs/hero-character/brief.md --dry-run
+
+# placeholder, no key and no model needed
+./.venv/bin/python src/generate.py briefs/hero-character/brief.md
 
 # for real, locally, at no cost
 IMAGE_BACKEND=local ./.venv/bin/python src/generate.py briefs/hero-character/brief.md
 
-# bigger, or a different shape
-IMAGE_BACKEND=local ./.venv/bin/python src/generate.py briefs/my-asset/brief.md --size 1024x640
+# hold the structure of an existing drawing, leaving colour free
+IMAGE_BACKEND=local-cn ./.venv/bin/python src/generate.py briefs/hero-character/brief.md \
+    --control reference-drawing.png --control-strength 0.85
+
+make check          # lint, briefs, anchors, solutions, scene, render, mutation, smoke
+
+# correct a generated image instead of generating it again
+./.venv/bin/python scripts/postprocess.py in.png out.png --clean-ground
+
+# remove a plain background, keeping white interiors
+./.venv/bin/python scripts/cutout_flat.py in.png out.png --trim
+
+# cut an approved character into the layers the animation moves
+./.venv/bin/python scripts/split_layers.py character.png out/
 ```
 
-The image goes to `briefs/<name>/out/` with a JSON sidecar holding the prompt,
-the backend, the model and every setting. **The prompt travels with the image.**
-An image whose prompt was lost can only be guessed at again, never iterated on.
+To see the result move, serve the repository root and open
+`preview/index.html`. That page is a harness, not a site: it renders the same
+`scene.json` a real page would, and carries a nine-state grid so a regression is
+visible without moving anything.
 
-Useful knobs, all optional:
+`make check` runs in under a second and needs no key. It includes deliberately
+broken fixtures, so every check is watched failing on every run: a check with a
+wrong glob and a check that works are indistinguishable in a terminal otherwise.
 
-| Flag | For |
+| Path | What's in it |
 |---|---|
-| `--init FILE --init-strength 0.8` | start from an existing image instead of from noise |
-| `--control FILE --control-strength 0.85` | hold another drawing's structure, leave colour free |
-| `--key '#FFFFFF'` | the background colour to ask for |
-| `--size 1024x1024` | anything the backend accepts |
-
-Environment knobs for the local backend: `MFLUX_STEPS` (12 for a draft, 24 for a
-candidate), `MFLUX_SEED` to make a run repeatable, `MFLUX_CACHE_GB=2` on a 16 GB
-machine to stay off swap.
-
-**512 is for a question, 1024 is for a candidate.** A small fast run answers
-"did my change take effect". It lies about likeness, proportion, line and
-framing, so never judge acceptance criteria from one and never promote one.
-
----
-
-## 2. Take the green out
-
-Local models tint the paper. The whole image drifts a few units toward green or
-blue, and because it drifts the subject too, the eye reads it as a bad scan.
-
-```bash
-./.venv/bin/python scripts/postprocess.py in.png out.png --white-balance
-```
-
-This removes the cast **each pixel carries**, in Lab, clipped so nothing is ever
-pushed past neutral and weighted down on saturated pixels so object colour
-survives. A single global shift does not work: the cast is not uniform, and
-subtracting the background's cast from everything turns skin grey.
-
-Two other corrections live in the same script:
-
-| Flag | What it fixes | Safe when |
-|---|---|---|
-| `--white-balance` | the colour cast | always |
-| `--clean-ground` | soft shading the model put on the background | the subject is **not** pale. It eats a white shirt |
-| `--snap-palette` | large flat areas drifting off the spec's palette | the areas really are flat |
-
-> **Order matters, and getting it wrong costs the subject.** If you are going to
-> cut the background out as well, **cut first and correct after**. The cast is
-> part of what separates a white shirt from off-white paper: correct it first and
-> the two become seven units apart instead of fifty, and the cutout swallows the
-> shirt. See `docs/solutions/cut-before-you-correct-the-cast.md`.
-
----
-
-## 3. Cut the background off
-
-```bash
-./.venv/bin/python scripts/cutout_flat.py in.png out.png --tolerance 3 --erode 2 --trim
-```
-
-The background is **not a colour to match, it is the region connected to the
-border**. The fill starts at the edges and eats inward through everything that
-matches; whatever it cannot reach is the subject. That is why a white t-shirt
-six units from the paper it stands on survives, when every "is this pixel white"
-test erases the torso.
-
-| Flag | Use it when |
-|---|---|
-| `--tolerance N` | raise it if background survives in corners, lower it if the subject gets eaten |
-| `--erode N` | a pale ring is left around the subject |
-| `--feather N` | the edge is too hard for the ground it will sit on |
-| `--trim` | you want the file cropped to the subject |
-| `--onto FILE` | composite the result onto something straight away |
-
-Chroma key and luminance key were both tried and both failed. Why, and what each
-one looked like when it broke, is in `docs/solutions/the-wrong-keyer.md`.
-
----
-
-## 4. Write a brief that works
-
-A brief lives at `briefs/<name>/brief.md`. Two headings are required and
-`make briefs` fails without them:
-
-- `## Prompt` — sent verbatim as the subject. Everything under it reaches the
-  model, nothing else does.
-- `## Acceptance` — how you will know it came out right.
-
-One heading is optional: `## Prompt with structure` is used **instead** of
-`## Prompt` when you pass `--control`, and it is deliberately much shorter,
-because the control image already says where everything goes and the prose only
-has to say what things are made of.
-
-Copy `briefs/hero-character/brief.md`. It is the model, and `make briefs` names
-it when it fails.
-
-### The rules that were paid for
-
-**Everything has to be in the prompt.** The model has no memory. It receives two
-strings and nothing else: not the previous image, not the acceptance criteria,
-not the conversation. A requirement that is only in the acceptance list did not
-reach it.
-
-**Never write a prohibition in the positive block.** "No shading", "without a
-shadow", "not cropped" all aim at the thing. Prohibitions belong in the negative
-block, which lives once in `docs/ILLUSTRATION_SPEC.md` and is appended
-automatically.
-
-**Never use a word that is already in the negative block.** Asked for and
-forbidden in the same run, it cancels, and what comes out is a half measure of
-both. `make briefs` checks every brief against the negative block and fails on a
-collision. It has caught `glow`, `frame`, `plants` and `scenery` in real briefs.
-
-**Describe materials and layout, never style.** Line weight, grain, palette and
-lighting come from the spec and are appended to every prompt. A brief that says
-"flat vector style" is fighting the one place that is supposed to decide it.
-
-**Be concrete about position, and say the negative space out loud.** "A wide gap
-of empty paper separates him from the desk, roughly a third of his own body width"
-survives. "Next to the desk" does not.
-
-**Split an ask the model cannot do in one go.** Asked for a figure waving, it drew
-the gesture correctly and then drew it the size of his head. It can hold the
-shape or the scale, not both. Two drawings, each asking for the one thing it does
-well, cost nothing extra when the parts end up on separate layers anyway.
-
-**Acceptance criteria have to be observable.** "No filled black area larger than
-the character's hair" can be checked. "Looks good" cannot, and a brief nobody can
-judge gets a bad result accepted or a good one re-rolled on instinct.
-
-**If the result is wrong, the brief is the first suspect.** Re-running an
-unchanged brief and expecting a different image is how credit burns. Every run is
-a fresh sample; a defect fixed by re-rolling was fixed by luck and will be back.
-
-**Record what you tried, in the brief.** A `## Recipe` section at the bottom
-saying which run was used, at what size, with what init, is what makes an asset
-reproducible a month later.
-
----
-
-## 5. Do not redraw something already approved
-
-This is the rule that matters most once there is more than one asset.
-
-A brief cannot pin identity. It specifies what is in the picture, and identity
-lives below that: how far apart the eyes sit, where the hairline breaks, how wide
-the neck is against the collar. The model resamples all of it on every run, so a
-longer brief buys a closer stranger. Thirteen runs of a brief copied clause for
-clause from an approved character produced a competent young man who was not him.
-
-So, in this order:
-
-1. **Can the approved drawing be cut to give this?** Cut it.
-   `scripts/split_layers.py` finds the joints by measuring rather than by being
-   told where they are.
-2. **Can the shape be drawn from the approved drawing's own colours?** Draw it.
-   A limb in a flat style is a tapered capsule with a round cap at each end, and
-   a script lays that down exactly, on colours sampled from the character.
-   `scripts/build_contact.py` is a worked example.
-3. **Only then generate**, and only with `--init` pointing at the approved image,
-   never from noise.
-
-Generation is last because it is the only one of the three that can come back
-with somebody else. See `docs/solutions/the-second-drawing-is-a-different-person.md`.
-
----
-
-## 6. Make it move
-
-Animation here is compositing, not generation. Nothing is generated at run time
-and nothing is generated per frame.
-
-```bash
-./.venv/bin/python scripts/split_layers.py character.png out/   # body, head, eyes
-./.venv/bin/python scripts/build_contact.py                     # the contact loop
-./.venv/bin/python scripts/preview_contact.py --frames 18       # judge it as a sheet
-```
-
-The output is a set of layers plus a manifest (`scene.json`, `rig.json`) saying
-where each goes, what turns about what, and how far. That manifest is the
-contract between this repository and whatever renders it. `make scene` and
-`make render` check it.
-
-Four things to know before you build a rig:
-
-- **A pivot in pixels is a pivot at one size.** Express `transform-origin` as a
-  share of the element's own box, or the head leaves the neck at every size but
-  the one you tested.
-- **Zero is down and angles grow clockwise**, which is what CSS does. In a y-down
-  system that is `(-sin d, cos d)`. PIL turns the other way, so anything
-  previewing in Python negates.
-- **A layer holds only the pose it was drawn in.** Draw a limb hanging at rest
-  and it falls off the bottom of the canvas and rasterises to nothing; a rotation
-  cannot recover pixels that were never written. Draw the pose that is seen and
-  store the rig's angles as deltas from it.
-- **No two layers may share a pixel.** Overlapping cuts of one flat drawing
-  ghost the moment they move.
-
----
-
-## 7. Verify
-
-```bash
-make check
-```
-
-Eight checks, under a second, no key:
-
-| Target | What it proves |
-|---|---|
-| `lint` | style, imports, obvious mistakes |
-| `briefs` | every asset has a brief, with a prompt and acceptance criteria, and no word the negative block forbids |
-| `anchors` | the positive and negative blocks do not contradict each other |
-| `solutions` | every recorded lesson still names a live enforcement, **and that file names the lesson back** |
-| `scene` | every scene manifest describes files that exist |
-| `render` | every joint lands in the same place at four render sizes |
-| `mutation` | every check is watched failing against a fixture broken on purpose |
-| `smoke` | the pipeline runs end to end, no key, no cost |
-
-`mutation` is the one worth explaining. A check with a wrong glob and a check
-that works look identical in a terminal. So every run also feeds each check a
-fixture that must be rejected, and the build fails if one of them passes.
-
----
-
-## 8. When it comes out wrong
-
-| What you see | What it usually is |
-|---|---|
-| the paper is green or blue | the backend's cast. `postprocess.py --white-balance` |
-| the cutout ate a white shirt | you corrected the cast before cutting. Cut first |
-| a thing you forbade keeps appearing | you wrote the prohibition in the positive block |
-| a thing you asked for never appears | it is also in the negative block. `make briefs` will say so |
-| the style drifted | the backend discards the negative prompt. Distilled models do this silently and say so when they run |
-| the same brief gives different people | that is sampling, not a bug. Stop generating the subject, start compositing it |
-| a layer moved and nothing appeared | the layer rasterised empty. Check its bounding box |
-| a joint is right at one size and wrong at another | the pivot is in pixels |
-
----
-
-## Why it is built this way
-
-The visual system is written down **once**, in `docs/ILLUSTRATION_SPEC.md`, and
-appended to every prompt. A brief describes a scene and never describes a line
-weight. Changing the look of everything is one edit, not a search through every
-brief ever written.
-
-The trade is real: it will not draw anything outside its own system. Asked for
-something warmer or softer, the honest answer is that the spec has to change
-first, where the change applies to everything already made. That is a limitation
-and it is also the entire point.
-
-Nothing approved is ever overwritten. Filenames are timestamped, `approved/`
-directories are append-only, and the one mistake here that cannot be undone is
-silently replacing a good asset.
-
-Every lesson that cost something becomes a file in `docs/solutions/`, naming what
-enforces it, and that thing must name the lesson back. Both directions are
-checked, because a rule pointing at a deleted enforcement reads like a guarantee
-and is a memory.
-
----
-
-## Map
-
-| Path | What is in it |
-|---|---|
+| `docs/guide.md` | **the manual.** Every command, in the order you need them |
 | `docs/ILLUSTRATION_SPEC.md` | the visual system, and one copy of each prompt anchor |
 | `docs/solutions/` | one file per lesson, each naming what enforces it |
-| `docs/asset-map.md` | the routes an asset can take, and how to pick one |
-| `docs/architecture.md` | the pipeline, and how to add a backend |
-| `docs/cost.md` | read before anything that could spend money |
-| `docs/decisions.md` | settled questions, so they stay settled |
-| `docs/workspace.md` | what is deliberately untracked, and why |
+| `docs/workspace.md` | what is deliberately untracked, and what belongs there |
+| `src/adapters/` | one interface, one backend per file, chosen by `IMAGE_BACKEND` |
 | `src/generate.py` | brief plus anchor, sent to whichever backend is selected |
-| `src/adapters/` | one file per protocol, chosen by `IMAGE_BACKEND` |
-| `scripts/` | the checks, the cutout, the splitters, the post-processor |
-| `briefs/<name>/brief.md` | what is in one picture |
-| `briefs/<name>/approved/` | the assets that were accepted, with the recipe beside them |
-| `preview/` | a harness for watching layers compose. Not a site |
+| `scripts/` | the checks, the cutout, the splitter, the post-processor |
+| `preview/` | a harness for watching the layers compose. Not a site |
+| `briefs/<name>/approved/` | approved assets, with the recipe beside each |
+
+Adding a backend is a file in `src/adapters/` implementing `generate()` and
+`available()`, plus a line in the registry. `fake.py` is the shortest example.
+
+**Beyond generating.** An image is a sample, so a defect fixed by generating
+again is fixed by luck. `scripts/postprocess.py` corrects mechanical defects
+mechanically: erasing shading the generator added to the background, and pulling
+large flat areas onto the spec's own palette. `scripts/split_layers.py` cuts an
+approved character into a static body, a head that rotates and eyes that
+translate, finding the joint by measuring rather than by being told where it is.
 
 Python 3.11, Pillow, numpy and OpenCV. Local generation uses
-[mflux](https://github.com/mflux-community/mflux) on Apple Silicon.
+[mflux](https://github.com/mflux-community/mflux) on Apple Silicon. Background
+removal is `scripts/cutout_flat.py`, which treats the background as the region
+connected to the border rather than as a colour to match, so a white shirt on
+off-white paper survives it.
 
 The spec format is structurally modelled on
 [oil-visual](https://github.com/oil-oil/oil-visual) (MIT). The visual system here

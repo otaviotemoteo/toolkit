@@ -73,7 +73,7 @@ make setup-local  # the Apple Silicon generation stack, large
 runs every check against fixtures broken on purpose: if one passes, the check is
 what is broken, not the fixture.
 
-Commands for generating an image are in `README.md`. To see the hero move, serve
+Commands for generating an image are in `docs/guide.md`. To see the hero move, serve
 the repository root and open `preview/index.html`.
 
 ## Where to look, and when
@@ -81,6 +81,7 @@ the repository root and open `preview/index.html`.
 | Read | When |
 |---|---|
 | `PROGRESS.md` | first thing, every session |
+| `docs/guide.md` | the manual: every command, and the rules behind each |
 | `docs/ILLUSTRATION_SPEC.md` | **mandatory before generating anything** |
 | `briefs/<name>/brief.md` | before touching that asset |
 | `docs/solutions/README.md` | before proposing something that feels obvious |
@@ -114,10 +115,11 @@ try things in is now written down: cut it, else draw it from the approved
 drawing's colours, else generate from it as an init. Generation is last because
 it is the only one that can come back with somebody else.
 
-**README.md is the manual**, written for someone arriving from another
+**`docs/guide.md` is the manual**, written for someone arriving from another
 repository: how to generate, how to take the backend's cast out, how to cut a
-background off, how to write a brief that works, and what each failure usually
-means. Keep it accurate when any of those change.
+background off, how to write a brief that works, how to build a rig, and what
+each failure usually means. `README.md` stays the tour and points at it. Keep the
+guide accurate when any of those change.
 
 **Next:** the remaining assets. The character is a fixed input for all of them
 now, composited rather than redrawn, so identity across the set is a property

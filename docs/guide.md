@@ -7,6 +7,11 @@ Written for someone arriving from another repository. Nothing here assumes you
 have read anything else, and each section links to the lesson behind it for when
 you want the reasoning.
 
+**Want to see it before reading it?** [`examples/`](examples/README.md) follows
+one asset from its first failed run to the approved image: four bad briefs with
+the picture each produced, then the one that worked and what is still wrong with
+it.
+
 | | |
 |---|---|
 | [1. Install and pick a backend](#1-install-and-pick-a-backend) | getting it to run at all |
@@ -23,15 +28,29 @@ you want the reasoning.
 
 ## 1. Install and pick a backend
 
+You need Python 3.11 on your path as `python3.11`, and Node 22 or newer, which
+one of the checks runs on. Generating locally also needs an Apple Silicon Mac.
+Nothing else: no account, no key, no card.
+
 ```bash
 make setup          # venv, runtime and dev requirements
-make setup-local    # the Apple Silicon generation stack. Large, and optional
 make check          # under a second, needs no key. Run it before you trust anything
+make setup-local    # mflux, the Apple Silicon generation stack. Large, and optional
 ```
 
-Copy `.env.example` to `.env` and set `IMAGE_BACKEND`. With no key at all it
-still runs: the `fake` backend writes a placeholder, which is enough to see the
-assembled prompt and catch most mistakes before spending anything.
+With nothing configured it still runs: the default backend is `fake`, which
+writes a placeholder. That is enough to see the assembled prompt and catch most
+mistakes before spending anything.
+
+The backend is chosen by the `IMAGE_BACKEND` environment variable. **`.env` is
+not read automatically.** `.env.example` lists every variable with a comment;
+copy it to `.env`, then either source it or set the variable on the command
+line, which is what every example below does:
+
+```bash
+set -a; source .env; set +a                  # once per shell, or
+IMAGE_BACKEND=local ./.venv/bin/python ...   # per command
+```
 
 | `IMAGE_BACKEND` | What it is | Needs |
 |---|---|---|
@@ -62,16 +81,35 @@ be discarded. See `docs/solutions/a-flag-can-exist-and-be-ignored.md` and
 # see the whole assembled prompt, generate nothing, spend nothing
 ./.venv/bin/python src/generate.py briefs/hero-character/brief.md --dry-run
 
-# for real, locally, at no cost
+# a placeholder and its sidecar, to see where files land. No model needed
+./.venv/bin/python src/generate.py briefs/hero-character/brief.md
+
+# for real, locally, at no cost. A draft first: it answers "did my change take"
+IMAGE_BACKEND=local MFLUX_STEPS=12 ./.venv/bin/python src/generate.py \
+    briefs/hero-character/brief.md --size 512x512
+
+# then a candidate, which is the only thing worth judging
 IMAGE_BACKEND=local ./.venv/bin/python src/generate.py briefs/hero-character/brief.md
 
 # a different size or shape
 IMAGE_BACKEND=local ./.venv/bin/python src/generate.py briefs/my-asset/brief.md --size 1024x640
 ```
 
+The first local run downloads the model, already quantised, from Hugging Face.
+After that a 512 draft took about a minute and a half and a 1024 candidate about
+eight minutes on a 16 GB M5; `docs/cost.md` has the table.
+
 The image goes to `briefs/<name>/out/` with a JSON sidecar holding the prompt,
-the backend, the model and every setting. **The prompt travels with the image.**
+the backend, the model, and the steps and seed under `settings`. **The prompt
+travels with the image.**
 An image whose prompt was lost can only be guessed at again, never iterated on.
+`out/` is untracked. When a run is approved, copy the image and its sidecar into
+`briefs/<name>/approved/` under a new version number, and never over an old one.
+
+The sidecar stores the *path* of a control or init image, not the image. Keep
+that file beside the brief, or the run cannot be repeated.
+[`examples/good-brief.md`](examples/good-brief.md) shows an approved image that
+lost its control drawing this way.
 
 Useful flags, all optional:
 
@@ -84,8 +122,11 @@ Useful flags, all optional:
 | `--backend NAME` | overrides `IMAGE_BACKEND` for one run |
 
 Environment knobs for the local backend: `MFLUX_STEPS` (12 for a draft, 24 for a
-candidate), `MFLUX_SEED` to make a run repeatable, `MFLUX_CACHE_GB=2` on a 16 GB
-machine to stay off swap.
+candidate, which is the default), `MFLUX_SEED` to hold the sample still while
+you change the prompt, and
+`MFLUX_CACHE_GB`, which caps the MLX cache and defaults to 6. On a 16 GB machine
+set it to 2 as soon as a run is slow for no reason: at 6 one draft went into
+swap and took 31 minutes instead of 74 seconds. `local-cn` reads `MFLUX_CN_STEPS` instead.
 
 **512 is for a question, 1024 is for a candidate.** A small fast run answers "did
 my change take effect". It lies about likeness, proportion, line and framing, so
@@ -168,8 +209,16 @@ One heading is optional: `## Prompt with structure` is used **instead** of
 because the control image already says where everything goes and the prose only
 has to say what things are made of.
 
-Copy `briefs/hero-character/brief.md`. It is the model, and `make briefs` names
-it when it fails.
+Copy `briefs/hero-character/brief.md` for its shape. It is the one `make briefs`
+names when it fails. [`examples/bad-briefs.md`](examples/bad-briefs.md) shows the
+rules below being broken, with the picture that came back, and
+[`examples/good-brief.md`](examples/good-brief.md) shows the same brief before
+and after its prohibitions were taken out. Twelve more real briefs are indexed
+in [`../briefs/README.md`](../briefs/README.md).
+
+**The same brief does not give the same image twice.** The model samples. A
+brief decides which images are likely, not which one you get, so judge a brief
+over a few runs and fix the seed when you want to see what one sentence changed.
 
 ### The rules that were paid for
 
@@ -189,7 +238,7 @@ both. `make briefs` checks every brief against the negative block and fails on a
 collision; it has caught `glow`, `frame`, `plants` and `scenery` in real briefs.
 See `docs/solutions/never-both-blocks.md`.
 
-**Describe materials and layout, never style.** Line weight, grain, palette and
+**Describe materials and layout, never style.** Edges, grain, palette and
 lighting come from the spec and are appended to every prompt. A brief that says
 "flat vector style" is fighting the one place that is supposed to decide it.
 
@@ -261,8 +310,21 @@ and nothing is generated per frame.
 
 ```bash
 ./.venv/bin/python scripts/split_layers.py character.png out/   # body, head, eyes
-./.venv/bin/python scripts/build_contact.py                     # the contact loop
-./.venv/bin/python scripts/preview_contact.py --frames 18       # judge it as a sheet
+./.venv/bin/python scripts/build_contact.py                     # a loop, cut from the hero
+./.venv/bin/python scripts/preview_contact.py --frames 18 --sheet out/contact-sheet.png
+```
+
+The last two run as they are on a fresh clone. `build_contact.py` opens the
+approved hero in `briefs/hero-character/approved/`, cuts a second asset out of
+it and draws one arm, generating nothing; `preview_contact.py` lays the loop out
+as a sheet. The layers land in `briefs/contact-greeting/approved/v2/`, which is
+untracked build output; that asset's brief says why.
+
+To watch the hero itself move:
+
+```bash
+python3 -m http.server 8753        # from the repository root
+# then open http://localhost:8753/preview/index.html
 ```
 
 The output is a set of layers plus a manifest (`scene.json`, `rig.json`) saying
@@ -305,7 +367,7 @@ is at each hand swap, rather than trusting the numbers in the timeline.
 make check
 ```
 
-Eight checks, under a second, no key:
+Eight checks, under a second, no key. `render` is the one that needs Node 22:
 
 | Target | What it proves |
 |---|---|
@@ -338,6 +400,10 @@ fixture that must be rejected, and the build fails if one of them passes.
 | a layer moved and nothing appeared | the layer rasterised empty. Check its bounding box |
 | a joint is right at one size and wrong at another | the pivot is in pixels |
 | two parts of one drawing ghost when they move | they share pixels. Cuts have to be exclusive |
+| a pale second copy of the subject behind the first | the prose and the control image disagree about position. With `--control`, describe materials only |
+| a part is missing, such as a face | nothing under the prompt heading asked for it |
+
+Four of these rows have a picture: [`examples/bad-briefs.md`](examples/bad-briefs.md).
 
 ---
 
@@ -345,6 +411,9 @@ fixture that must be rejected, and the build fails if one of them passes.
 
 | Path | What is in it |
 |---|---|
+| `docs/README.md` | the index of everything under `docs/` |
+| `docs/examples/` | one asset from first failure to approval, with every image and prompt |
+| `briefs/README.md` | thirteen real briefs, and what each is worth reading for |
 | `docs/ILLUSTRATION_SPEC.md` | the visual system, and one copy of each prompt anchor |
 | `docs/solutions/` | one file per lesson, each naming what enforces it |
 | `docs/asset-map.md` | the routes an asset can take, and how to pick one |

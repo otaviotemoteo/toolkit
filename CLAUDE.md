@@ -82,6 +82,7 @@ the repository root and open `preview/index.html`.
 |---|---|
 | `PROGRESS.md` | first thing, every session |
 | `docs/guide.md` | the manual: every command, and the rules behind each |
+| `docs/examples/README.md` | before writing a brief: four that failed and one that passed, with the images |
 | `docs/ILLUSTRATION_SPEC.md` | **mandatory before generating anything** |
 | `briefs/<name>/brief.md` | before touching that asset |
 | `docs/solutions/README.md` | before proposing something that feels obvious |
@@ -90,6 +91,7 @@ the repository root and open `preview/index.html`.
 | `docs/cost.md` | before anything that could spend money |
 | `docs/decisions.md` | before reopening a settled question |
 | `docs/workspace.md` | when an expected file is missing from the repository |
+| `docs/README.md` | the index of everything else under `docs/` |
 
 Installed in `~/.claude/skills/`: `oil-visual` gave the spec its structure;
 `oil-motion` gave the runtime pattern. Its video and sprite atlas routes do not
@@ -99,7 +101,16 @@ apply here, and `briefs/hero-character/motion.md` says why.
 
 Phases 1 and 2 are closed. The character is approved and frozen, the hero
 animates from three layers and one rotation, and eight checks run in under a
-second. Fourteen lessons are recorded, each naming what enforces it.
+second. Twenty lessons are recorded, each naming what enforces it.
+
+**Every document is tracked; output is not.** A brief, a lesson, a note: if it
+is worth keeping it is committed, and if not it is deleted rather than hidden.
+The only untracked document is `PROGRESS.md`. Images are the other way round:
+one asset keeps its approved images in the repository as the worked example,
+`briefs/hero-character/`, and the other assets' `approved/` directories are
+ignored by name. Do not track another asset's images without being asked.
+`docs/workspace.md` is the map, and `docs/examples/` walks through the tracked
+asset's first round and has to stay true to the sidecars beside its images.
 
 **The hero, as built:** an approved drawing, cut by script into a static body, a
 head that rotates about the base of the neck, and eyes lifted off the face with

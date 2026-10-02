@@ -22,8 +22,9 @@ and appended to every prompt automatically. A brief says what is in the scene.
 The style says how everything is drawn. Neither one can drift into the other.
 
 The trade is that it will not draw anything outside its own system. There is one
-palette, one texture, two line weights, and a rule that colour appears only on
-things that are running or moving. Asked for something warmer or softer or more
+palette, flat shapes under even light, one fine grain, and a rule that what
+differs between two images is what is happening in them, never how they are
+drawn. Asked for something warmer or softer or more
 detailed, the honest answer is that the system has to change first, in the file,
 where the change applies to everything already made. That is a real limitation
 and it is also the entire point.
@@ -82,9 +83,10 @@ starts from what was actually sent rather than from memory.
 Into `briefs/<name>/out/`, next to the brief that produced them, with a JSON
 sidecar holding the prompt, the backend, the model and the settings.
 
-The images themselves are build output and are not committed. The brief and the
-sidecar are, because those are what regenerate the image. If a specific asset
-should be versioned, add it explicitly.
+Everything in `out/` is build output and is not committed, sidecars included:
+most runs are rejected. The brief is committed. When a run is approved, the image
+and its sidecar are copied into `briefs/<name>/approved/` under a new version
+number, and that is committed.
 
 ---
 
@@ -140,6 +142,22 @@ wrong glob and a check that works are indistinguishable in a terminal otherwise.
 | `preview/` | a harness for watching the layers compose. Not a site |
 | `briefs/<name>/approved/` | approved assets, with the recipe beside each |
 
+**Where to go from here.** One asset is tracked with its images as the worked
+example, `briefs/hero-character/`, and the docs are routed around it.
+[`docs/README.md`](docs/README.md) is the full index.
+
+| You want to | Read |
+|---|---|
+| run it for the first time, locally with mflux | [`docs/guide.md`](docs/guide.md), sections 1 and 2 |
+| see a bad brief and the image it produced | [`docs/examples/bad-briefs.md`](docs/examples/bad-briefs.md) |
+| see a brief that was approved, and what is still wrong with it | [`docs/examples/good-brief.md`](docs/examples/good-brief.md) |
+| write your own brief | [`docs/guide.md`](docs/guide.md), section 5, with [`briefs/hero-character/brief.md`](briefs/hero-character/brief.md) open |
+| read more real briefs | [`briefs/README.md`](briefs/README.md) |
+| work out why a result came out wrong | [`docs/guide.md`](docs/guide.md), section 9 |
+| decide whether to generate at all | [`docs/asset-map.md`](docs/asset-map.md) |
+| know why a rule exists | [`docs/solutions/`](docs/solutions/README.md) |
+| find a file you expected and did not get | [`docs/workspace.md`](docs/workspace.md) |
+
 Adding a backend is a file in `src/adapters/` implementing `generate()` and
 `available()`, plus a line in the registry. `fake.py` is the shortest example.
 
@@ -150,7 +168,7 @@ large flat areas onto the spec's own palette. `scripts/split_layers.py` cuts an
 approved character into a static body, a head that rotates and eyes that
 translate, finding the joint by measuring rather than by being told where it is.
 
-Python 3.11, Pillow, numpy and OpenCV. Local generation uses
+Python 3.11, Pillow, numpy and OpenCV, and Node 22 for one of the checks. Local generation uses
 [mflux](https://github.com/mflux-community/mflux) on Apple Silicon. Background
 removal is `scripts/cutout_flat.py`, which treats the background as the region
 connected to the border rather than as a colour to match, so a white shirt on

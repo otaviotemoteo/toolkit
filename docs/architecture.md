@@ -66,6 +66,7 @@ rule was learned.
 ## What travels with an image
 
 Every generated image gets a JSON sidecar holding the exact prompt, the negative
-prompt, the backend, the model, the dialect, and any init or control image with
-its strength. An image whose prompt was lost can only be guessed at again, never
+prompt, the backend, the model, the dialect, the steps and seed the backend
+reports under `settings`, and the path of any init or control image with its
+strength. An image whose prompt was lost can only be guessed at again, never
 iterated on, and a composite made from another image says so in writing.

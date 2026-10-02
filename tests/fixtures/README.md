@@ -8,6 +8,8 @@ fixtures and fails if any of them passes.
 | `briefs/` | `scripts/check_briefs.py` |
 | `anchors/` | `scripts/check_anchors.py` |
 | `solutions/` | `scripts/check_solutions.py` |
+| `scenes/` | `scripts/check_scene.py` |
+| `render/` | `scripts/check_render.mjs` |
 
 A check nobody has watched fail is indistinguishable, in the terminal, from a
 check with a wrong glob: both print nothing and exit zero. These exist so that

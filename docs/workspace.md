@@ -1,31 +1,67 @@
 # The workspace
 
-This repository is deliberately smaller than the working directory it lives in.
-Several files that matter are untracked, and this document is the map of them,
-so the way of working can be reconstructed without the files themselves.
+What is in the working directory and not in the repository, and why. Read this
+when a file a document mentions is not there.
 
-Read this if you are an agent picking the project up, or a person deciding what
-to recreate.
+## The rule
 
-## Why the split exists
+**Every document is tracked. What is not tracked is output and session state.**
 
-Two kinds of writing accumulate in a project like this and they age at opposite
-speeds.
+A document is anything written to be read: a brief, a lesson, a set of notes, a
+recipe. If it is worth keeping it is worth showing, and if it is not worth
+showing it is deleted rather than hidden. An earlier version of this repository
+kept a second, private layer of notes beside the public one, and the two drifted:
+tracked files ended up pointing at files only one machine had.
 
-One kind is about **the toolkit**: how a brief is shaped, what the visual system
-forbids, why a check exists, what a past mistake cost. It is true for anyone who
-clones the repo and it stays true next month. That is tracked.
+Output is anything a command produced: a generated image, a cut layer, a contact
+sheet. It is untracked because it is large, because it can be rebuilt, or because
+it belongs to one particular site rather than to the toolkit.
 
-The other kind is about **this run of the work**: what is done, what is blocked,
-what was read last week, drafts, rejected frames. It is real and it is useful,
-and asking a stranger to read it is asking them to carry someone else's Tuesday.
-That is untracked.
+## What is untracked
 
-The rule when adding a file: would someone with a different project want this?
-If yes, it is tracked. If it only makes sense to whoever is holding this one, it
-is not.
+### `briefs/<name>/out/`
 
-## What is untracked, and what belongs in each
+Every run of `src/generate.py` lands here: the image and its JSON sidecar. Most
+runs are rejected, so most of this directory is waste, and it grows without
+bound. A run that is approved is copied, image and sidecar together, into
+`briefs/<name>/approved/` under a new version number.
+
+### `briefs/<name>/approved/`, for every asset except `hero-character`
+
+The approved images of the portfolio this toolkit was built for: six project
+cards, a three panel strip, a contact greeting, a walking profile, two desks.
+`.gitignore` names each directory.
+
+Their briefs are tracked, because a brief is a document and twelve real ones
+teach the format better than one. Their images are not, because they are one
+person's site: forty pictures a stranger would download to learn nothing the
+briefs and the lessons do not already say. So a brief here may name a file under
+its own `approved/` that a clone does not have. That is expected, and
+`briefs/README.md` says which briefs those are.
+
+One asset keeps its images, as the worked example: `briefs/hero-character/`.
+`docs/examples/` walks through it.
+
+Your own approved assets are tracked like any other file. Nothing in
+`.gitignore` matches a directory you create.
+
+### `briefs/<name>/approved/layers/`
+
+The raw output of `scripts/split_layers.py`. It is assembled into
+`approved/scene/`, which is tracked, and rebuilding it from the approved cutout
+takes a second.
+
+### `preview/strip.html`
+
+A harness page that composes three of the untracked assets and nothing else.
+`preview/index.html`, which composes the hero, is tracked.
+
+### The pictures in `docs/history/`
+
+Each round of iteration has a directory there with a `notes.md`, which is
+tracked, and the frames the notes talk about, which are not. Four frames of the
+first round are tracked as copies under `docs/examples/hero-first-pass/`,
+because they are the worked example of a bad brief.
 
 ### `PROGRESS.md`
 
@@ -35,76 +71,29 @@ Four sections: current verified state, done, blocked with what unblocks each,
 and decisions with dates. Anything decided in conversation and not written here
 did not happen.
 
-It is untracked because it describes a moment. A cloned repo starts a new one on
-its first session rather than inheriting someone else's.
-
-### `docs/foundations.md`, `docs/harness-map.md`, `docs/breakdowns.md`
-
-Reading notes on harness engineering and on design systems for agents, taken
-while setting this project up. `foundations.md` is the vocabulary,
-`harness-map.md` is a symptom-to-remedy lookup table, `breakdowns.md` covers
-what shipped agent products do that the literature does not describe.
-
-Untracked because they are notes on how we work rather than on how the toolkit
-works. Recreate them by reading the sources, not by copying the notes: the value
-was in the reading.
-
-### `docs/templates/`
-
-Third-party templates, downloaded verbatim from the harness engineering course
-and never adapted. Untracked because they are not ours to redistribute, and
-because a template that has been quietly edited is worse than no template.
-
-### `reference/`
-
-Context for the portfolio this toolkit was built to serve: the brief for the
-site, the pipeline notes, the six project write-ups. In Portuguese, and specific
-to one person's portfolio.
-
-Untracked because none of it is needed to use the toolkit. If you are adapting
-this to another project, this directory is where your own equivalent goes.
-
-### `docs/writeups/`
-
-Drafts, posts, and contact sheets about the work. Output about the process
-rather than part of it.
-
-### Two files inside `docs/solutions/`
-
-`free-credit-is-a-hypothesis.md` and `subscription-is-not-api-credit.md`. The
-rest of that directory is tracked, because each of those lessons explains
-something that was committed. These two do not: they are about which accounts to
-open and what they cost, no code depends on either, and the transferable part is
-already a hard constraint in `CLAUDE.md`. A stranger cloning this does not need
-a record of someone else's billing.
-
-### `briefs/<name>/approved/layers/`
-
-The raw output of `scripts/split_layers.py`. Untracked because it is assembled
-into `approved/<name>/scene/`, which is tracked, and rebuilding it from the
-approved cutout takes a second. The decision is the scene; this is the sawdust.
-
-### `docs/history/`
-
-The archive of rejected frames and iteration rounds. Has its own README, which
-is tracked. See it for the shape of a round.
+It is the only document that is untracked, because it describes a moment rather
+than the toolkit. A cloned repository starts a new one on its first session
+instead of inheriting someone else's. Anything in it that stays true for longer
+than a week belongs in `docs/decisions.md` or `docs/solutions/`, and gets moved
+there.
 
 ## What is tracked, and why
 
 | Path | Why it survives a clone |
 |---|---|
 | `README.md`, `CLAUDE.md` | what this is, and the contract for working in it |
+| `docs/README.md` | the index of everything under `docs/` |
+| `docs/guide.md` | the manual |
+| `docs/examples/` | one asset's first round, bad briefs to approved, image by image |
 | `docs/ILLUSTRATION_SPEC.md` | the visual system, and the one copy of each prompt anchor |
 | `docs/solutions/` | one file per lesson that cost something, each naming what enforces it |
-| `docs/workspace.md` | this file |
+| `docs/harness/` | reading notes on working with coding agents, which is where this repository's shape came from |
+| `docs/history/*/notes.md` | what each round of iteration was asking and what it settled |
 | `src/`, `scripts/`, `Makefile` | the pipeline, the checks, and the single verification command |
 | `tests/fixtures/` | deliberately broken inputs, so every check can be watched failing |
 | `preview/` | the harness that proves a scene manifest composes |
-| `briefs/<name>/brief.md` | worked examples of the format the whole system depends on |
-| `briefs/<name>/approved/` | approved assets and the recipe that produced each |
-
-Generated images under `briefs/*/out/` are untracked build output. The brief and
-the JSON sidecar are what regenerate them, and those are tracked.
+| `briefs/<name>/brief.md` | thirteen real briefs |
+| `briefs/hero-character/approved/` | the worked asset: images, sidecar, recipe and rig |
 
 ## Starting this project fresh
 
@@ -114,3 +103,4 @@ the JSON sidecar are what regenerate them, and those are tracked.
 3. Create `PROGRESS.md` with the four sections above and fill in what you know.
 4. Read `CLAUDE.md`, then `docs/ILLUSTRATION_SPEC.md`, then the index in
    `docs/solutions/`. In that order: the contract, the system, then the scars.
+5. Read `docs/examples/`, then write your first brief with `docs/guide.md` open.

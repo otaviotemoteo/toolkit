@@ -113,6 +113,10 @@ Anything else that moves gets the same test first.
 
 ## Where each asset stands
 
+This section is the inventory of the portfolio the toolkit was built for, kept
+as a worked example of sorting a set of assets into routes. Every brief is in
+`briefs/`. Only the hero character's images are; `docs/workspace.md` says why.
+
 The five illustrated pieces, from the site inventory:
 
 | Asset | Route | State |

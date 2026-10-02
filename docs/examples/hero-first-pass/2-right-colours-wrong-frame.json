@@ -1,0 +1,14 @@
+{
+  "brief": "briefs/hero-character/brief.md",
+  "backend": "local",
+  "model": "mflux-community/z-image-base-mflux-q4",
+  "size": "1024x1024",
+  "key_color": "#F7F6F3",
+  "generated_at": "20260907-143745",
+  "cost_note": "local, no cost, 28 steps at guidance 3.5",
+  "dialect": "diffusion",
+  "init_image": null,
+  "init_strength": null,
+  "prompt": "A young man stands well over on the left side of the scene, facing the viewer,\narms crossed comfortably across his chest, weight even on both feet. Light skin,\nshort tousled dark brown hair, a small easy smile, simple dot eyes. He wears a\nplain white short-sleeved t-shirt and black sneakers. His legs are covered by\nmid-blue denim jeans, and the blue runs the whole length of both legs from waist\nto ankle, the same solid blue throughout.\n\nA wide gap of empty paper separates him from the furniture. He is not leaning on\nthe desk and not touching it; there is roughly a third of his own body width of\nclear space between his shoulder and the nearest edge of it.\n\nTo the right of that gap stands a brown wooden desk on straight legs, seen\nstraight on. On the desk, two identical widescreen monitors side by side with\nblack bezels, and to their right an open laptop with a black body turned\nslightly toward the viewer. The screens are dark and carry short horizontal\nlines of code in several different muted colours, a few lines of each, the way\nsyntax highlighting looks from across a room. Under the right side of the desk\nsits a computer tower filled in solid near-black from top to bottom, with two or\nthree cables curving loosely up to the desk. A small cup of pens at the far\nright edge.\n\nEverything rests on one horizontal ground line, on plain empty off-white paper.\nThe man is roughly as tall as the desk is wide.\n\nhand drawn ink line illustration on off-white paper, sketchbook line with visible\nconstruction strokes, evenly flat areas of muted colour inside the outlines,\nlight skin, dark brown hair, plain white t-shirt, blue trousers, black\nsneakers, brown wooden desk, black monitor bezels, black computer tower, dark\nscreens showing short horizontal lines of code in muted syntax colours, sparse\n45 degree diagonal hatching where shade is needed, plain empty #F7F6F3\nbackground, generous padding around the artwork",
+  "negative_prompt": "photograph, photorealistic, 3d render, cgi, painterly, oil painting, watercolour,\nairbrush, gradient, shading, highlight, specular, glow, bloom, blur, soft shadow,\ncast shadow, drop shadow, ambient occlusion, depth of field, vignette, wall,\nwallpaper, scenery, shape behind the subject, floor plane, halftone dots,\nstippling, neon, garish, oversaturated, plants, mugs, sticky notes, posters,\nreadable words, paragraphs of text, watermark, signature, frame, border, cropped"
+}

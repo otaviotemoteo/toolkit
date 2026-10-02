@@ -1,0 +1,18 @@
+{
+  "brief": "briefs/hero-character/brief.md",
+  "backend": "local-cn",
+  "model": "mflux-community/z-image-turbo-controlnet-union-2-1-mflux-q4",
+  "size": "1024x1024",
+  "key_color": "#F7F6F3",
+  "generated_at": "20260907-152119",
+  "cost_note": "local controlnet, no cost, 14 steps, canny at 0.85. Negative prompt discarded: this model is distilled",
+  "dialect": "diffusion",
+  "control_image": "/private/tmp/claude-501/-Users-otavio/43668408-89d0-4905-9d89-08278387c631/scratchpad/init_paper.png",
+  "control_type": "canny",
+  "control_strength": 0.85,
+  "prompt_section": "## Prompt with structure",
+  "init_image": null,
+  "init_strength": null,
+  "prompt": "A young man with light skin and short dark brown hair, wearing a plain white\nt-shirt, mid-blue denim jeans and black sneakers, standing at the far left of\nthe scene with his arms crossed, his whole body visible and clear of the\nfurniture with empty space between him and it.\n\nTo his right stands a brown wooden desk. On the desk sit two identical\nwidescreen monitors of exactly the same size, side by side, and an open laptop\nat the far right corner of the desk. The computer tower stands on the floor\nbeside the desk rather than on top of it. The screens are dark and carry lines\nof code in muted syntax colours.\n\nflat illustration with clean rounded forms and a fine paper grain, every surface\none even area of muted colour laid down without blending, light skin, dark brown\nhair, plain white t-shirt, blue trousers, black sneakers, brown wooden desk,\nmatte black monitor bezels, matte black computer tower, dark screens carrying\nlines of code in muted syntax colours, plain empty #F7F6F3 background,\ngenerous padding around the artwork",
+  "negative_prompt": ""
+}

@@ -187,6 +187,7 @@ def main() -> None:
         "key_color": args.key,
         "generated_at": stamp,
         "cost_note": result.cost_note,
+        "settings": result.settings,
         "dialect": backend.prompt_dialect,
         "control_image": str(args.control) if args.control else None,
         "control_type": args.control_type if args.control else None,

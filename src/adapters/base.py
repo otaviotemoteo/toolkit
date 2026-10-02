@@ -60,6 +60,10 @@ class ImageResult:
     negative_prompt: str = ""
     # Whatever the vendor said about cost, when it says anything at all.
     cost_note: str = ""
+    # The knobs this run was made with, as fields rather than as prose inside
+    # cost_note: steps, guidance, seed. A seed of None means it was sampled and
+    # the run cannot be repeated, which is worth knowing before trying to.
+    settings: dict = field(default_factory=dict)
 
 
 class ImageBackend(ABC):

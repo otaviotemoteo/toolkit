@@ -127,6 +127,8 @@ class LocalMFluxBackend(ImageBackend):
             cost_note=(f"local, no cost, {steps} steps at guidance {guidance}"
                        + (f", from {request.init_image.name} at strength "
                           f"{request.init_strength}" if request.init_image else "")),
+            settings={"steps": int(steps), "guidance": float(guidance),
+                      "seed": int(seed) if seed else None},
         )
 
 
@@ -215,4 +217,5 @@ class LocalControlNetBackend(LocalMFluxBackend):
             cost_note=(f"local controlnet, no cost, {steps} steps, "
                        f"{request.control_type} at {request.control_strength}. "
                        f"Negative prompt discarded: this model is distilled"),
+            settings={"steps": int(steps), "seed": int(seed) if seed else None},
         )

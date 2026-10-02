@@ -43,8 +43,8 @@ Ground and line.
 |---|---|---|
 | `PAPER` | `#F7F6F3` | background of every illustration |
 | `PAPER-DEEP` | `#EFEEE9` | raised surface, a far wall |
-| `INK` | `#16161A` | every outline, and true black objects |
-| `INK-SOFT` | `#5A5A66` | secondary line, distant object, cable |
+| `INK` | `#16161A` | fine marks, and true black objects |
+| `INK-SOFT` | `#5A5A66` | secondary marks, distant object, cable |
 | `ACCENT` | `#5D5D9C` | interface accent, and anything that moves |
 | `WASH` | `#ECECF5` | soft fill behind an accent element |
 
@@ -90,58 +90,66 @@ Paper steps for edges and surfaces, taken from the wireframe:
 
 ## Texture
 
-One texture, and it is not shading. **Diagonal hatching at 45 degrees**, 4px
-stroke with 6px of space, in `INK` at 4.5% opacity, or in `ACCENT` at 6-7% when
-the surface belongs to the machinery.
+One texture: **a fine, even paper grain** over the whole image, ground and
+shapes alike. It is what keeps a flat shape from reading as a vector export, and
+it is not shading: it does not get denser on one side of anything.
+
+There is no soft shadow, no gradient fill, no airbrush, no halftone dot, and no
+hatching inside an illustration. Where a form needs to separate from another,
+it does so by being a different flat colour.
+
+The page the illustrations sit on has a texture of its own, a diagonal hatch at
+45 degrees, taken from the wireframe. It belongs to the layout, in CSS, and is
+recorded here only so the two are never confused:
 
 ```css
 repeating-linear-gradient(45deg, rgba(22,22,26,.045) 0 4px, transparent 4px 10px)
 repeating-linear-gradient(45deg, rgba(93,93,156,.07)  0 4px, transparent 4px 10px)
 ```
 
-Every shadow in every illustration is this hatch. There is no soft shadow, no
-gradient fill, no airbrush, no halftone dot. Hatching reads as technical
-drawing, which is the register this whole system is in.
+An earlier version of this system drew that hatch inside the illustrations as
+their only shading. It left with the ink line, and no anchor asks for it.
 
-## Line and mass
+## Flat mass
 
 This is the rule that decides whether an illustration works, and it is the one
 most likely to be violated by a generator left to itself.
 
-**Flat fill inside the line, and the fill never shades.** A shirt is a contour
-with one flat colour inside it. A monitor is a bezel of one flat dark with a
-screen of another. There is no highlight, no shadow side, no blend from light to
-dark anywhere on any surface.
+**One flat colour per surface, and the fill never shades.** A shirt is one flat
+colour. A monitor is a bezel of one flat dark with a screen of another. There is
+no highlight, no shadow side, no blend from light to dark anywhere on any
+surface.
 
 The failure this prevents is the one that ruins the register. The moment a
 generator starts rendering light, the drawing stops being a drawing and starts
 being a bad 3D render: soft shadow under the chin, gradient down the trousers, a
-shine on the monitor. Flat fill keeps it a drawing that happens to be coloured.
+shine on the monitor. Flat fill keeps it an illustration.
 
-**Test:** cover the outlines and what is left should look like paper cut-outs,
-not like a photograph with the edges traced.
+**Test:** it should look like paper cut-outs laid on a page, not like a
+photograph that has been simplified.
 
-## Line weight
+## Edges
 
-Two weights, and only two.
+A form ends where its colour ends. **There is no drawn contour**, and nothing is
+outlined for the sake of an outline: the edge of the shirt is the place where
+`SHIRT` meets `PAPER` or `SKIN`. Edges are clean and slightly rounded, never
+sketched.
 
-- **Contour**, roughly 3px at 1024 wide: the outline of a figure, a monitor
-  frame, a desk edge.
-- **Detail**, roughly 1.5px: fingers, cables, code lines, small props.
+Fine marks exist where a thing is itself thin: the features of a face, a cable,
+a line of code on a screen, the seam of a pocket. They are short, few, and in
+`INK` or `INK-SOFT`.
 
-**Drawn, not ruled.** The line is allowed to wobble, to overshoot a corner, to
-show a construction stroke that was never erased. This is deliberate and it is
-the character of the whole system: it reads as made by a person, which is the
-one thing a generated illustration usually fails to read as.
-
-What it is not: scribbled, hairy, or so loose the form is unclear. One or two
-searching lines per limb, not twenty.
+This replaced two line weights and a hand-drawn stroke that was allowed to
+wobble and overshoot. That rule was held by the negative block, a backend that
+discards the negative block returned flat shapes instead, and the flat version
+was the one that was kept. What happened is in
+`docs/solutions/the-negative-block-was-carrying-the-style.md`.
 
 ## What changes between assets, and what never does
 
 This is the rule that replaced "colour lives in the machinery".
 
-**Never changes, anywhere.** The line register and the palette. And wherever the
+**Never changes, anywhere.** The flat register and the palette. And wherever the
 character or the desk appear: his face, hair, build, clothes and their colours,
 the desk, the tower, the cables, the pen cup, their positions and their colours.
 
@@ -153,7 +161,7 @@ run, a stack trace, a graph, a terminal mid-command. Those briefs carry a
 **Outside the desk scenes, everything changes but the register.** The set this
 spec serves is small and mostly not the desk: a shared spreadsheet, two contrasting
 personas, a stack of layers, a three panel strip. They share the palette, the
-line weight and the flat mass, and nothing else. An earlier version of this file
+grain and the flat mass, and nothing else. An earlier version of this file
 claimed the whole set was one desk with different screens on it. That was
 written before the inventory existed, and the inventory says otherwise.
 
@@ -171,7 +179,8 @@ written before the inventory existed, and the inventory says otherwise.
 - Gradient or shading inside any filled area
 - Glow, blur, soft shadow, cast shadow on the floor, glassmorphism
 - 3D, photorealism, texture that imitates a material
-- Halftone dots, stippling, cross-hatching that is not the 45 degree hatch
+- Halftone dots, stippling, hatching of any kind
+- A drawn outline around a form, or a sketched, doubled or searching line
 - Decorative clutter: plants, coffee cups, sticky notes, floating icons
 - Text inside the illustration unless the brief asks for it by name
 - Watermark, signature, frame border
@@ -291,8 +300,8 @@ When something is wrong, change one thing and hold everything else. Regenerating
 from the same prompt and hoping for a different result is how credit gets burned.
 
 ```text
-Keep the scene, composition, character, pose, objects, line weights, hatching
-and colour exactly as they are.
+Keep the scene, composition, character, pose, objects, edges, grain and colour
+exactly as they are.
 Change only <the one thing>.
 Do not alter anything else, do not add or remove any element.
 ```
@@ -305,10 +314,11 @@ Before an image is accepted:
 - Every filled area is flat. Pick any surface and its colour should be the same
   at both ends of it.
 - The palette is the one in Tokens. No colour appears that is not on that list.
-- The line reads as hand-drawn: at least one visible construction or overshoot
-  stroke, and no sign of a vector or a ruler.
-- Any shading present is 45 degree hatching. No soft shadow, and nothing casts a
-  shadow onto the floor.
+- Forms are clean flat shapes with no drawn contour. There is no sketch line
+  anywhere: no doubled, searching or construction stroke.
+- There is no shading of any kind, hatching included. No soft shadow, and nothing
+  casts a shadow onto the floor.
+- A fine grain is visible over the whole image and is the same everywhere.
 - The background is empty. No wall, no vignette, no shape behind the subject.
 - Nothing touches the frame, and there is clear space between the character and
   the furniture.
@@ -325,10 +335,13 @@ this file. Four things were taken because they are craft rather than identity:
 2. The verbatim-text block that stops a generator inventing or misspelling
    labels.
 3. The surgical retry instruction above.
-4. `scripts/cutout.py`, called directly rather than copied.
+4. Its `scripts/cutout.py`, a chroma keyer, called directly at first rather than
+   copied. It is no longer used and was never part of this repository: a
+   diffusion model does not paint a uniform key colour, so
+   `scripts/cutout_flat.py` replaced it. See `docs/solutions/the-wrong-keyer.md`.
 
 Everything visual was written from scratch. The original is built on manga ink,
 circular halftone, a stick figure in round glasses and a warm-yellow Border
 Collie, and the two systems are opposites in texture: theirs is organic and
-dotted, this one is geometric and hatched. Adapting theirs would have made it
+dotted, this one is geometric and flat. Adapting theirs would have made it
 impossible to tell which rules are craft and which are someone else's taste.

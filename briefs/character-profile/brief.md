@@ -85,8 +85,8 @@ Then the visual system, which is the same for every asset here.
 
 - Every filled area is flat. No surface gets lighter or darker across itself.
 - The colours are the ones in the spec's Tokens table and no others.
-- The line reads as hand-drawn, with no vector or ruled look anywhere.
-- Any shading present is 45 degree hatching. Nothing casts a shadow and no edge
+- Forms are clean flat shapes, with no sketch line anywhere.
+- There is no shading of any kind. Nothing casts a shadow and no edge
   is soft or blurred.
 - The background is plain paper and nothing else.
 - Nothing in the drawing touches the frame.

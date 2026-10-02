@@ -33,8 +33,8 @@ class FakeBackend(ImageBackend):
         img = Image.new("RGB", (w, h), PAPER)
         d = ImageDraw.Draw(img)
 
-        # 45-degree hatch, the project's one texture, so even the placeholder
-        # is in the system.
+        # The page's own 45-degree hatch, so a placeholder is unmistakably a
+        # placeholder and still sits on the layout it will be dropped into.
         step = 10
         for i in range(-h, w, step):
             d.line([(i, h), (i + h, 0)], fill=(22, 22, 26, 12), width=1)

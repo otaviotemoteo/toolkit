@@ -73,7 +73,7 @@ Then the visual system.
 
 - Every filled area is flat. No surface gets lighter or darker across itself.
 - The colours are the ones in the spec's Tokens table and no others.
-- Any shading present is 45 degree hatching. Nothing casts a shadow on the floor
+- There is no shading of any kind. Nothing casts a shadow on the floor
   and no edge is soft or blurred.
 - The background is plain paper and nothing else.
 - Nothing in the drawing touches the frame.

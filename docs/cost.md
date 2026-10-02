@@ -9,7 +9,8 @@ local generation.
 
 Two published claims of free credit were tested and both were false. Treat a
 third as a hypothesis until a real call says otherwise, and probe a credential
-before building anything on top of it.
+before building anything on top of it. The two failures are written up in
+`docs/solutions/free-credit-is-a-hypothesis.md`.
 
 ## Accounts
 
@@ -23,7 +24,8 @@ before building anything on top of it.
 ## If a card appears
 
 Buy prepaid API credit, not a subscription: no ChatGPT plan includes API credit,
-and the two are separate billing systems. At roughly $0.005 an image, eighteen
+and the two are separate billing systems
+(`docs/solutions/subscription-is-not-api-credit.md`). At roughly $0.005 an image, eighteen
 assets at forty attempts each is under four dollars, which is inside the five
 dollar minimum.
 

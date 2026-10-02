@@ -10,11 +10,6 @@ in the spec or the contract. Delete `never-both-blocks.md` and
 `scripts/check_anchors.py` becomes a script nobody can justify. Delete
 `the-wrong-keyer.md` and `scripts/cutout_flat.py` looks needlessly clever.
 
-A lesson about which account to open, or what a vendor charged on a Tuesday, is
-not that. Two of those exist and are kept locally rather than committed;
-`docs/workspace.md` lists them. The session log they refer to is untracked for
-the same reason.
-
 The rule for putting something here: it was wrong, it is now right, and the
 reason it was wrong will still be a live temptation in three months. If a lesson
 only matters this week, it belongs in `PROGRESS.md` and should die with it.
@@ -57,3 +52,5 @@ will be learned again.
 | `the-second-drawing-is-a-different-person.md` | identity is below the level a brief can reach |
 | `a-layer-holds-only-the-pose-it-was-drawn-in.md` | a rotation cannot recover pixels off the canvas |
 | `zero-is-down-and-it-turns-the-other-way.md` | one angle convention, written down once |
+| `free-credit-is-a-hypothesis.md` | two published free tiers, both dead on the first call |
+| `subscription-is-not-api-credit.md` | a consumer plan is never access to the API |

@@ -1,13 +1,21 @@
 # History
 
-The archive of what each round of iteration actually produced. Everything in
-here except this file is untracked, because it grows without bound and none of
-it is needed to use the toolkit.
+The archive of what each round of iteration actually produced. The `notes.md`
+of each round is tracked. The frames the notes talk about are not: they grow
+without bound, and `docs/workspace.md` explains the split. So a note here names
+pictures by number that a clone does not have.
 
-It is kept anyway, and locally, for one reason: the images a pipeline rejected
-are the only evidence of why its rules exist. A spec full of oddly specific
-prohibitions reads as superstition until you see the six frames that put each
-one there.
+The rounds are kept for one reason: the images a pipeline rejected are the only
+evidence of why its rules exist. A spec full of oddly specific prohibitions
+reads as superstition until you see the frames that put each one there. To see
+some, `docs/examples/` carries four frames of the first round with the prompt
+each was sent.
+
+| Round | What it settled |
+|---|---|
+| [`2026-09-07-hero-first-pass`](2026-09-07-hero-first-pass/notes.md) | the visual system, rewritten three times by thirteen frames |
+| [`2026-09-11-hero-animation`](2026-09-11-hero-animation/notes.md) | a flat drawing can be cut into layers and moved, and where the seam shows |
+| [`2026-09-11-pivot-in-pixels`](2026-09-11-pivot-in-pixels/notes.md) | a head that left its neck at every size but one |
 
 ## What a round looks like
 

@@ -6,50 +6,45 @@ __pycache__/
 !.env.example
 .DS_Store
 
-# Generated images are build output, not source. The brief and the prompt
-# sidecar are what get committed; regenerating from them is the point.
-# Remove this line if a specific approved asset should be versioned here.
+# Generated images are build output, not source, and so are the JSON sidecars
+# written beside them. A run that gets approved is copied, image and sidecar,
+# into briefs/<name>/approved/, which is tracked.
 briefs/*/out/
 out/
 
 # ---------------------------------------------------------------------------
-# Working files. Local, iterative, and not part of the toolkit.
+# What is untracked on purpose. docs/workspace.md is the map of all of it.
 #
-# Everything below is real and useful; none of it is something a stranger who
-# clones this repo should have to read or carry. docs/workspace.md is committed
-# and explains what belongs in each of these, so the flow can be rebuilt without
-# the files themselves.
+# The rule: every document is tracked. What is not tracked is output, which is
+# images and the files a script rebuilds, and session state.
 # ---------------------------------------------------------------------------
 
 # Session state. Read at the start of a session, written before the end.
 PROGRESS.md
 
-# Reading notes on harness and design method. Ours, and about how we work
-# rather than about how the toolkit works.
-docs/foundations.md
-docs/harness-map.md
-docs/breakdowns.md
-
-# Third party templates, downloaded verbatim. Not ours to redistribute.
-docs/templates/
-
-# Context for this particular portfolio, in Portuguese. Nothing here is needed
-# to use the toolkit.
-reference/
-
-# Drafts, posts and contact sheets about the work.
-docs/writeups/
-
-# Two lessons that are ours rather than the toolkit's. Both are about which
-# accounts to buy and when, no committed code depends on either, and the part
-# worth keeping is already a hard constraint in CLAUDE.md.
-docs/solutions/free-credit-is-a-hypothesis.md
-docs/solutions/subscription-is-not-api-credit.md
-
 # The raw output of the layer cut. Regenerable in a second from the approved
 # cutout, and assembled into approved/*/scene/, which is what is tracked.
 briefs/*/approved/layers/
 
-# The archive of what each round of iteration produced.
-docs/history/*
-!docs/history/README.md
+# The approved images of the portfolio this toolkit was built for. Their briefs
+# are tracked, as worked examples of the format. One asset keeps its images as
+# well, briefs/hero-character/, and docs/examples/ walks through it. Named one
+# by one on purpose: a blanket briefs/*/approved/ would hide the assets you are
+# about to approve.
+briefs/card-devtrack/approved/
+briefs/card-personal-tracker/approved/
+briefs/card-phishing/approved/
+briefs/card-sales/approved/
+briefs/card-service-order/approved/
+briefs/card-smart-home/approved/
+briefs/character-profile/approved/
+briefs/contact-desk/approved/
+briefs/contact-greeting/approved/
+briefs/strip-fire/approved/
+briefs/strip-scene/approved/
+# A harness page that only composes with the images above.
+preview/strip.html
+
+# The frames each round of iteration produced. The notes beside them are
+# tracked; the pictures are not.
+docs/history/**/*.png
